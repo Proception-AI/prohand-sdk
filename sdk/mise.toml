@@ -1,0 +1,20 @@
+# Tool pins for the Proception SDK.
+#
+# A customer runs `mise install` here and can then build and run everything
+# below this directory.
+#
+# MAINTAINERS: this file ships verbatim to customers, so it must stay
+# self-contained — no variables, includes or paths that resolve only in the
+# build tree it comes from, and no comment describing that tree. The
+# per-package mise.toml/tasks.toml files under */python are build wiring and
+# are excluded from the release instead.
+#
+# Pins only, no tasks. The SDK's command surface is the shipped justfile —
+# duplicating it here would hand customers two ways to do the same thing.
+
+[tools]
+python = "3.12.13" # SDK packages declare >=3.8
+uv = "0.11.26"     # installs the Python SDKs from the shipped uv.lock
+just = "1.57.0"    # runs sdk/justfile and demo/*/justfile
+cmake = "4.1.2"    # demo/cpp needs >=3.16, C++17
+ninja = "1.13.2"   # generator for the C++ demos

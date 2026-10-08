@@ -1,0 +1,39 @@
+# Grasp Pose Configuration for Hand Controller
+# This file contains pre-defined grasp poses and configuration parameters
+torque_map:
+  low: 0.10
+  mild: 0.45
+  high: 1.00
+default_torque_level: high
+hands:
+  # ready pose with all fingers up
+  finger_down_0:
+    thumb: [10, 10, 10, 35]
+    index: [0, 15, 60, 0]
+    middle: [0, 15, 60, 0]
+    ring: [0, 15, 60, 0]
+    pinky: [0, 15, 60, 0]
+  finger_down_1:
+    thumb: [45, 30, 15, 35]
+    index: [0, 35, 80, 15]
+    middle: [0, 15, 60, 0]
+    ring: [0, 15, 60, 0]
+    pinky: [0, 15, 60, 0]
+  finger_down_2:
+    thumb: [70, 30, 10, 35]
+    index: [0, 15, 60, 0]
+    middle: [0, 45, 70, 0]
+    ring: [0, 15, 60, 0]
+    pinky: [0, 15, 60, 0]
+  finger_down_3:
+    thumb: [105, 30, 10, 40]
+    index: [0, 15, 60, 0]
+    middle: [0, 15, 60, 0]
+    ring: [0, 55, 80, 0]
+    pinky: [0, 15, 60, 0]
+  finger_down_4:
+    thumb: [150, 20, 20, 75]
+    index: [0, 15, 60, 0]
+    middle: [0, 15, 60, 0]
+    ring: [0, 15, 60, 0]
+    pinky: [0, 30, 90, 55]
