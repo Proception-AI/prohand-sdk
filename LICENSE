@@ -1,0 +1,46 @@
+Proception SDK License
+
+Copyright (c) 2026 Proception Inc.
+Website: https://proception.ai
+
+================================================================================
+DUAL LICENSE STRUCTURE
+================================================================================
+
+This software package uses different licenses for different components:
+
+1. EXAMPLES AND DEMOS (sdk/demo/)
+   Licensed under the MIT License
+   See: sdk/demo/LICENSE
+
+2. CORE SDK LIBRARIES (sdk/prohand_sdk/, sdk/proglove_sdk/, sdk/prowrist_sdk/)
+   Licensed under Proception Proprietary License
+   See: sdk/prohand_sdk/LICENSE, sdk/proglove_sdk/LICENSE, and
+        sdk/prowrist_sdk/LICENSE
+
+3. DOCUMENTATION (sdk/docs/)
+   Licensed under Creative Commons Attribution 4.0 International
+   See: sdk/docs/LICENSE
+
+================================================================================
+GENERAL TERMS
+================================================================================
+
+The software components are provided for use with ProHand, ProGlove, and
+ProWristCam robotic hardware manufactured by Proception Inc.
+
+NO WARRANTY: The software is provided "AS IS", without warranty of any kind,
+express or implied, including but not limited to the warranties of
+merchantability, fitness for a particular purpose and noninfringement.
+
+LIMITATION OF LIABILITY: In no event shall Proception Inc. be liable for any
+claim, damages or other liability, whether in an action of contract, tort or
+otherwise, arising from, out of or in connection with the software or the use
+or other dealings in the software.
+
+For full license terms and conditions, visit:
+https://proception.ai/sdk-license
+
+For support and inquiries:
+Email: support@proception.ai
+Website: https://proception.ai
