@@ -1,0 +1,205 @@
+# ProHand, ProGlove & ProWristCam SDK C++ Demo - cdylib FFI
+
+default:
+    @just --list
+
+# Build all C++ demos (both hand and glove)
+build:
+    cmake -S . -B build
+    cmake --build build -j
+
+# Clean build artifacts
+clean:
+    rm -rf build
+
+# Run connect demo (test IPC connection)
+connect *args:
+    just build
+    ./build/connect {{ args }}
+
+# Run ping demo (send ping commands)
+ping *args:
+    just build
+    ./build/ping {{ args }}
+
+# Run test-hand demo (test each joint individually)
+test-hand *args:
+    just build
+    ./build/test_hand {{ args }}
+
+# Run cyclic-motion demo (sine wave motion patterns)
+cyclic-motion *args:
+    just build
+    ./build/cyclic_motion {{ args }}
+
+# Run kapandji demo (opposition test)
+kapandji *args:
+    just build
+    ./build/kapandji {{ args }}
+
+# Run connect-glove demo: connect-glove left|right [options] OR connect-glove --status-endpoint <endpoint>
+connect-glove +args:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    just build
+    ARGS=({{ args }})
+    FIRST="${ARGS[0]:-}"
+    REST="${ARGS[@]:1}"
+    if [ "$FIRST" = "left" ]; then
+        ./build/connect_glove --status-endpoint "ipc:///tmp/proglove-left-status.ipc" $REST
+    elif [ "$FIRST" = "right" ]; then
+        ./build/connect_glove --status-endpoint "ipc:///tmp/proglove-right-status.ipc" $REST
+    else
+        ./build/connect_glove {{ args }}
+    fi
+
+# Run test-glove demo: test-glove left|right [options] OR test-glove --status-endpoint <endpoint>
+test-glove +args:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    just build
+    ARGS=({{ args }})
+    FIRST="${ARGS[0]:-}"
+    REST="${ARGS[@]:1}"
+    if [ "$FIRST" = "left" ]; then
+        ./build/test_glove --status-endpoint "ipc:///tmp/proglove-left-status.ipc" $REST
+    elif [ "$FIRST" = "right" ]; then
+        ./build/test_glove --status-endpoint "ipc:///tmp/proglove-right-status.ipc" $REST
+    else
+        ./build/test_glove {{ args }}
+    fi
+
+# Run connect-wristcam: connect-wristcam left|right [options] OR connect-wristcam --endpoint <endpoint>
+connect-wristcam +args:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    just build
+    ARGS=({{ args }})
+    FIRST="${ARGS[0]:-}"
+    REST="${ARGS[@]:1}"
+    if [ "$FIRST" = "left" ]; then
+        ./build/connect_wristcam --endpoint "ipc:///tmp/prowristcam-left-stream.ipc" $REST
+    elif [ "$FIRST" = "right" ]; then
+        ./build/connect_wristcam --endpoint "ipc:///tmp/prowristcam-right-stream.ipc" $REST
+    else
+        ./build/connect_wristcam {{ args }}
+    fi
+
+# Run test-wristcam: test-wristcam left|right [options] OR test-wristcam --endpoint <endpoint>
+test-wristcam +args:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    just build
+    ARGS=({{ args }})
+    FIRST="${ARGS[0]:-}"
+    REST="${ARGS[@]:1}"
+    if [ "$FIRST" = "left" ]; then
+        ./build/test_wristcam --endpoint "ipc:///tmp/prowristcam-left-stream.ipc" $REST
+    elif [ "$FIRST" = "right" ]; then
+        ./build/test_wristcam --endpoint "ipc:///tmp/prowristcam-right-stream.ipc" $REST
+    else
+        ./build/test_wristcam {{ args }}
+    fi
+
+# Run all basic demos in sequence
+demo-all:
+    @echo "Running all demos..."
+    @echo "\n=== Connection Test ==="
+    just connect
+    @echo "\n=== Ping Test ==="
+    just ping --count 3
+
+# Check ProHand C++ SDK availability
+check-hand:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "Checking C++ SDK..."
+    ARCH=$(uname -m)
+    if [ "$ARCH" = "aarch64" ]; then
+        LIB_NAME="libprohand_client_sdk_aarch64.so"
+    else
+        LIB_NAME="libprohand_client_sdk.so"
+    fi
+
+    if [ -f "../../prohand_sdk/lib/$LIB_NAME" ] || [ -f ../../prohand_sdk/lib/libprohand_client_sdk.dylib ] || [ -f ../../prohand_sdk/lib/libprohand_client_sdk.dll ]; then
+        echo "✓ ProHand SDK library found"
+    else
+        echo "✗ ProHand SDK library not found (expected: $LIB_NAME)"
+    fi
+
+    test -f ../../prohand_sdk/cpp/include/prohand_sdk/prohand_sdk.h && echo "✓ ProHand SDK headers found" || echo "✗ ProHand SDK headers not found"
+
+# Check ProGlove C++ SDK availability
+check-glove:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "Checking ProGlove C++ SDK..."
+    ARCH=$(uname -m)
+    if [ "$ARCH" = "aarch64" ]; then
+        LIB_NAME="libproglove_client_sdk_aarch64.so"
+    else
+        LIB_NAME="libproglove_client_sdk.so"
+    fi
+
+    if [ -f "../../proglove_sdk/lib/$LIB_NAME" ] || [ -f ../../proglove_sdk/lib/libproglove_client_sdk.dylib ] || [ -f ../../proglove_sdk/lib/libproglove_client_sdk.dll ]; then
+        echo "✓ ProGlove SDK library found"
+    else
+        echo "✗ ProGlove SDK library not found (expected: $LIB_NAME)"
+    fi
+
+    test -f ../../proglove_sdk/cpp/include/proglove_sdk/proglove_sdk.h && echo "✓ ProGlove SDK headers found" || echo "✗ ProGlove SDK headers not found"
+
+# Check ProWristCam C++ SDK availability
+check-wristcam:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "Checking ProWristCam C++ SDK..."
+    ARCH=$(uname -m)
+    if [ "$ARCH" = "aarch64" ]; then
+        LIB_NAME="libprowristcam_client_sdk_aarch64.so"
+    else
+        LIB_NAME="libprowristcam_client_sdk.so"
+    fi
+
+    if [ -f "../../prowrist_sdk/lib/$LIB_NAME" ] || [ -f ../../prowrist_sdk/lib/libprowristcam_client_sdk.dylib ] || [ -f ../../prowrist_sdk/lib/libprowristcam_client_sdk.dll ]; then
+        echo "✓ ProWristCam SDK library found"
+    else
+        echo "✗ ProWristCam SDK library not found (expected: $LIB_NAME)"
+    fi
+
+    test -f ../../prowrist_sdk/cpp/include/prowrist_sdk/prowrist_sdk.h && echo "✓ ProWristCam SDK headers found" || echo "✗ ProWristCam SDK headers not found"
+
+# Check all SDKs
+check:
+    @just check-hand
+    @echo ""
+    @just check-glove
+    @echo ""
+    @just check-wristcam
+    @echo ""
+    @echo "C++ compiler: $(which g++ || which clang++ || echo 'not found')"
+
+# Show help for all demos
+help-all:
+    @echo "=== Connect ==="
+    @just build > /dev/null 2>&1 && ./build/connect --help || echo "Build first: just build"
+    @echo "\n=== Ping ==="
+    @just build > /dev/null 2>&1 && ./build/ping --help || echo "Build first: just build"
+    @echo "\n=== Test Hand ==="
+    @just build > /dev/null 2>&1 && ./build/test_hand --help || echo "Build first: just build"
+    @echo "\n=== Cyclic Motion ==="
+    @just build > /dev/null 2>&1 && ./build/cyclic_motion --help || echo "Build first: just build"
+    @echo "\n=== Kapandji ==="
+    @just build > /dev/null 2>&1 && ./build/kapandji --help || echo "Build first: just build"
+
+# Show help for all ProGlove demos
+help-glove:
+    @echo "=== Test Glove ==="
+    @just build > /dev/null 2>&1 && ./build/test_glove --help || echo "Build first: just build"
+
+# Show help for all ProWristCam demos
+help-wristcam:
+    @echo "=== Connect WristCam ==="
+    @just build > /dev/null 2>&1 && ./build/connect_wristcam --help || echo "Build first: just build"
+    @echo "\n=== Test WristCam ==="
+    @just build > /dev/null 2>&1 && ./build/test_wristcam --help || echo "Build first: just build"

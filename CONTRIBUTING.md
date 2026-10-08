@@ -8,7 +8,7 @@ Thank you for your interest in contributing to the Proception SDK! We welcome co
 
 If you find a bug, please report it via:
 
-- **GitHub Issues**: https://github.com/Proception-AI/pro-sdk/issues
+- **GitHub Issues**: https://github.com/Proception-AI/prohand-sdk/issues
 - **Email**: contact@proception.ai
 
 **Please include:**

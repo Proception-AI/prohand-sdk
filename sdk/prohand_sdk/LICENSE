@@ -1,0 +1,75 @@
+Proception SDK Proprietary License
+
+Copyright (c) 2026 Proception Inc.
+All rights reserved.
+
+================================================================================
+GRANT OF LICENSE
+================================================================================
+
+Subject to the terms and conditions of this license, Proception Inc. grants
+you a limited, non-exclusive, non-transferable, revocable license to use this
+SDK software solely for the purpose of developing applications that interface
+with ProHand, ProGlove, and ProWristCam robotic hardware manufactured by
+Proception Inc.
+
+================================================================================
+RESTRICTIONS
+================================================================================
+
+You may NOT:
+- Redistribute, sublicense, or transfer this SDK to any third party
+- Modify, reverse engineer, decompile, or disassemble the SDK libraries
+- Use the SDK with hardware not manufactured by Proception Inc.
+- Remove or alter any copyright, trademark, or other proprietary notices
+- Use the SDK to develop competing robotic hand products
+
+================================================================================
+HARDWARE REQUIREMENT
+================================================================================
+
+This SDK requires valid ProHand, ProGlove, or ProWristCam hardware. Use of the
+SDK without authorized hardware is prohibited.
+
+================================================================================
+TERMINATION
+================================================================================
+
+This license is effective until terminated. Your rights under this license
+will terminate automatically without notice if you fail to comply with any
+term of this license. Upon termination, you must cease all use of the SDK
+and destroy all copies.
+
+================================================================================
+DISCLAIMER OF WARRANTY
+================================================================================
+
+THE SDK IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR
+IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.
+
+================================================================================
+LIMITATION OF LIABILITY
+================================================================================
+
+IN NO EVENT SHALL PROCEPTION INC. BE LIABLE FOR ANY SPECIAL, INCIDENTAL,
+INDIRECT, OR CONSEQUENTIAL DAMAGES WHATSOEVER (INCLUDING, WITHOUT LIMITATION,
+DAMAGES FOR LOSS OF BUSINESS PROFITS, BUSINESS INTERRUPTION, LOSS OF BUSINESS
+INFORMATION, OR ANY OTHER PECUNIARY LOSS) ARISING OUT OF THE USE OF OR
+INABILITY TO USE THIS SDK.
+
+================================================================================
+GOVERNING LAW
+================================================================================
+
+This license shall be governed by the laws of the jurisdiction in which
+Proception Inc. is incorporated, without regard to conflicts of law principles.
+
+================================================================================
+CONTACT
+================================================================================
+
+For licensing inquiries or support:
+Email: support@proception.ai
+Website: https://proception.ai
+Full Terms: https://proception.ai/sdk-license

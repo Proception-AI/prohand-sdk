@@ -1,0 +1,99 @@
+ProHand, ProGlove & ProWristCam SDK Package
+===========================================
+
+Version: 0.4.13.0
+Build Date: 2026-10-07
+Platform: macos-arm64, linux-arm64, linux-x64
+
+This package contains:
+1. ProHand SDK - FFI-based SDK for ProHand robotic hand control
+2. ProGlove SDK - FFI-based SDK for ProGlove sensor glove
+3. ProWristCam SDK - FFI-based SDK for ProWristCam JPEG video streaming
+4. Demo applications (Python, C++)
+5. IPC host binaries for device communication
+6. Documentation and examples
+
+See README.md for usage instructions.
+
+Package Structure:
+------------------
+prohand_sdk/
+  ├── lib/          - Pre-built native libraries (dylib, so)
+  ├── cpp/          - C++ headers and CMake integration
+  └── python/       - Python bindings and package
+
+proglove_sdk/
+  ├── lib/          - Pre-built native libraries (dylib, so)
+  ├── cpp/          - C++ headers and CMake integration
+  └── python/       - Python bindings and package
+
+prowrist_sdk/
+  ├── lib/          - Pre-built native libraries (dylib, so)
+  ├── cpp/          - C++ headers and CMake integration
+  └── python/       - Python bindings and package
+
+prohand_capnp_sdk/   (native Rust client — Cap'n Proto over ZMQ, zero-copy)
+  ├── src/          - `prohand-client` crate source
+  ├── schema/       - Vendored Cap'n Proto schemas (compiled by build.rs)
+  ├── build.rs      - Compiles the bundled schemas
+  └── Cargo.toml    - `cargo add`-ready crate manifest
+
+demo/
+  ├── python/       - Python demo scripts
+  │   ├── prohand_demo/   - ProHand examples
+  │   ├── proglove_demo/  - ProGlove examples
+  │   └── prowrist_demo/  - ProWristCam examples
+  └── cpp/          - C++ demo applications
+      ├── connect.cpp
+      ├── cyclic_motion.cpp
+      ├── test_hand.cpp
+      └── test_glove.cpp
+
+bin/
+  ├── prohand-headless-ipc-host      - ProHand IPC host (platform-specific)
+  ├── proglove-headless-ipc-host     - ProGlove IPC host (platform-specific)
+  └── prowristcam-headless-ipc-host  - ProWristCam IPC host (platform-specific)
+
+docs/
+  ├── API.md        - API reference documentation
+  └── EXAMPLES.md   - Usage examples and tutorials
+
+Quick Start:
+-----------
+1. Run the IPC host:
+   ./bin/prohand-headless-ipc-host
+
+2. Install Python SDK:
+   cd prohand_sdk/python && pip install -e .
+
+3. Run demo:
+   cd demo/python && python -m prohand_demo.connect
+
+For C++ development:
+   cd prohand_sdk/cpp && mkdir build && cd build && cmake .. && make
+
+Features:
+--------
+- Multi-language support (Python, C++)
+- Real-time control via ZeroMQ IPC
+- High-frequency streaming mode
+- Sensor data acquisition (ProGlove)
+- Joint control (ProHand)
+- JPEG video streaming (ProWristCam)
+
+System Requirements:
+-------------------
+- macOS 10.13+ (ARM64) or Linux (x86_64, ARM64)
+- Python 3.8+ (for Python development)
+- C++17 compiler (for C++ development)
+- ZeroMQ library (included with Python package)
+- USB connection to device
+
+Support:
+--------
+For support, contact: support@proception.ai
+
+Documentation: See docs/ directory
+GitHub Issues: (repository URL)
+
+License: See LICENSE file for details

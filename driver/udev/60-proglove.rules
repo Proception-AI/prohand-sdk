@@ -1,0 +1,43 @@
+# ProGlove udev rules for Linux
+# Covers CP210x (wireless dongle / v0) and STM32 CDC ACM (internal ProGlove).
+#
+# After editing, run:
+#   sudo udevadm control --reload-rules && sudo udevadm trigger
+#   Then unplug and replug the device
+
+# ============================================================================
+# RAW USB ACCESS (required for usb-serial-bridge)
+# ============================================================================
+# CP210x USB-to-serial (wireless dongle / ProGlove v0)
+SUBSYSTEM=="usb", ATTR{idVendor}=="10c4", ATTR{idProduct}=="ea61", MODE="0666", GROUP="plugdev"
+
+# ProGlove V1 STM32 direct USB (CDC ACM)
+SUBSYSTEM=="usb", ATTR{idVendor}=="0483", ATTR{idProduct}=="5741", MODE="0666", GROUP="plugdev"
+
+# ============================================================================
+# UNBIND KERNEL DRIVER (for raw USB / usb-serial-bridge mode)
+# Prevents kernel driver from claiming the device.
+# Comment out if you need /dev/ttyACM* or /dev/ttyUSB* for serial port mode.
+#
+# cp210x binds at the USB INTERFACE level (e.g. "3-6.2.2:1.0"), not the
+# top-level device — idVendor/idProduct/serial live on the parent device, so
+# this rule needs ATTRS{} (walks up to ancestors), not ATTR{} (current device
+# only). Using ATTR{} here makes the rule silently never match.
+# ============================================================================
+ACTION=="bind", SUBSYSTEM=="usb", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea61", ATTRS{serial}=="PRO-G*", RUN+="/bin/sh -c 'echo $kernel > /sys/bus/usb/drivers/cp210x/unbind 2>/dev/null || true'"
+# Unbind cdc_acm from the CDC comm (if:2) and data (if:3) interfaces so usb-serial-bridge can claim them.
+# cdc_acm unbind disabled — not needed with vendor bulk firmware (interfaces 0+1 only).
+# ACTION=="bind", SUBSYSTEM=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5741", RUN+="/bin/sh -c 'for iface in $kernel:1.2 $kernel:1.3; do echo $iface > /sys/bus/usb/drivers/cdc_acm/unbind 2>/dev/null || true; done'"
+
+# ============================================================================
+# SERIAL PORT ACCESS (when kernel driver creates /dev/tty*)
+# Only effective when the UNBIND rules above are commented out.
+# ============================================================================
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea61", MODE="0666", GROUP="plugdev", ENV{ID_MM_DEVICE_IGNORE}="1"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5741", MODE="0666", GROUP="plugdev", ENV{ID_MM_DEVICE_IGNORE}="1"
+
+# ============================================================================
+# SYMLINKS
+# ============================================================================
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea61", SYMLINK+="proglove-cp210x"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5741", SYMLINK+="proglove"
