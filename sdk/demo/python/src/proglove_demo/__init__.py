@@ -1,3 +1,0 @@
-"""
-ProGlove SDK Demo Examples
-"""
