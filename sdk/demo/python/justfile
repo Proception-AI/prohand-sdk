@@ -1,0 +1,232 @@
+# ProHand, ProGlove & ProWristCam SDK Python Demo - cdylib FFI
+
+default:
+    @just --list
+
+# Run connect demo (test IPC connection)
+connect:
+    cd src && python3 -m prohand_demo.connect
+
+# Run ping demo (send ping commands)
+ping *args:
+    cd src && python3 -m prohand_demo.ping {{ args }}
+
+# Show every value the SDK exposes (read-only dashboard, sends no commands)
+show-all *args:
+    cd src && python3 -m prohand_demo.show_all {{ args }}
+
+# Run test_hand demo (test each joint individually)
+test-hand *args:
+    cd src && python3 -m prohand_demo.test_hand {{ args }}
+
+# Run cyclic_motion demo (sine wave motion patterns)
+cyclic-motion *args:
+    cd src && python3 -m prohand_demo.cyclic_motion {{ args }}
+
+# Run udcap for left hand with IPC defaults
+udcap-left *args:
+    cd src && python3 -m prohand_demo.udcap_ctrl --hand left {{ args }}
+
+# Run udcap for right hand with IPC defaults
+udcap-right *args:
+    cd src && python3 -m prohand_demo.udcap_ctrl --hand right {{ args }}
+
+# Run kapandji demo (opposition test - placeholder)
+kapandji *args:
+    cd src && python3 -m prohand_demo.kapandji {{ args }}
+
+# Play predefined keyframe sequences (template, abduction, count, wave, rock-on, fist-wrist)
+keyframe-motion *args:
+    cd src && python3 -m prohand_demo.keyframe_motion {{ args }}
+
+# Print the keyframes of a sequence without moving the hand
+keyframe-list sequence="template":
+    cd src && python3 -m prohand_demo.keyframe_motion --sequence {{ sequence }} --list
+
+# Exercise every SDK command and report pass/fail coverage
+command-matrix *args:
+    cd src && python3 -m prohand_demo.command_matrix {{ args }}
+
+# Debug streaming mode connectivity
+debug-streaming *args:
+    cd src && python3 -m prohand_demo.debug_streaming {{ args }}
+
+# Needs the rerun extra: `uv pip install rerun-sdk` (or `uv sync --extra rerun`).
+# Auto-starts the hand driver in a tmux session if none is running (--no-launch to attach instead).
+# Log rotary/linear feedback + firmware target echo to Rerun while streaming a curl: rerun-hand [options]
+rerun-hand *args:
+    cd src && python3 -m prohand_demo.rerun_log {{ args }}
+
+# Run connect-glove demo: connect-glove left|right [options] OR connect-glove --status-endpoint <endpoint>
+connect-glove +args:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd src
+    ARGS=({{ args }})
+    FIRST="${ARGS[0]:-}"
+    REST="${ARGS[@]:1}"
+    if [ "$FIRST" = "left" ]; then
+        python3 -m proglove_demo.connect --status-endpoint "ipc:///tmp/proglove-left-status.ipc" $REST
+    elif [ "$FIRST" = "right" ]; then
+        python3 -m proglove_demo.connect --status-endpoint "ipc:///tmp/proglove-right-status.ipc" $REST
+    else
+        python3 -m proglove_demo.connect {{ args }}
+    fi
+
+# Run test-glove demo: test-glove left|right [options] OR test-glove --status-endpoint <endpoint>
+test-glove +args:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd src
+    ARGS=({{ args }})
+    FIRST="${ARGS[0]:-}"
+    REST="${ARGS[@]:1}"
+    if [ "$FIRST" = "left" ]; then
+        python3 -m proglove_demo.test_glove --status-endpoint "ipc:///tmp/proglove-left-status.ipc" $REST
+    elif [ "$FIRST" = "right" ]; then
+        python3 -m proglove_demo.test_glove --status-endpoint "ipc:///tmp/proglove-right-status.ipc" $REST
+    else
+        python3 -m proglove_demo.test_glove {{ args }}
+    fi
+
+# Run filter-control demo: filter-control left|right [options] OR filter-control --status-endpoint <endpoint>
+filter-control +args:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd src
+    ARGS=({{ args }})
+    FIRST="${ARGS[0]:-}"
+    REST="${ARGS[@]:1}"
+    if [ "$FIRST" = "left" ]; then
+        python3 -m proglove_demo.filter_control --status-endpoint "ipc:///tmp/proglove-left-status.ipc" $REST
+    elif [ "$FIRST" = "right" ]; then
+        python3 -m proglove_demo.filter_control --status-endpoint "ipc:///tmp/proglove-right-status.ipc" $REST
+    else
+        python3 -m proglove_demo.filter_control {{ args }}
+    fi
+
+# Run test-ota demo: test-ota left|right --image <path.bin> OR test-ota --status-endpoint <endpoint> --image <path.bin>
+test-ota +args:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd src
+    ARGS=({{ args }})
+    FIRST="${ARGS[0]:-}"
+    REST="${ARGS[@]:1}"
+    if [ "$FIRST" = "left" ]; then
+        python3 -m proglove_demo.test_ota --status-endpoint "ipc:///tmp/proglove-left-status.ipc" $REST
+    elif [ "$FIRST" = "right" ]; then
+        python3 -m proglove_demo.test_ota --status-endpoint "ipc:///tmp/proglove-right-status.ipc" $REST
+    else
+        python3 -m proglove_demo.test_ota {{ args }}
+    fi
+
+# Needs the rerun extra: `uv pip install rerun-sdk numpy` (or `uv sync --extra rerun`).
+# Auto-starts the glove driver in a tmux session if none is running (--no-launch to attach instead).
+# Log raw + processed tactile to Rerun: rerun-glove [left|right] [options]
+rerun-glove *args:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd src
+    ARGS=({{ args }})
+    FIRST="${ARGS[0]:-}"
+    REST="${ARGS[@]:1}"
+    if [ "$FIRST" = "left" ]; then
+        python3 -m proglove_demo.rerun_log --endpoint "ipc:///tmp/proglove-left-status.ipc" $REST
+    elif [ "$FIRST" = "right" ]; then
+        python3 -m proglove_demo.rerun_log --endpoint "ipc:///tmp/proglove-right-status.ipc" $REST
+    else
+        python3 -m proglove_demo.rerun_log {{ args }}
+    fi
+
+# Run connect-wristcam: connect-wristcam left|right [options] OR connect-wristcam --endpoint <endpoint>
+connect-wristcam +args:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd src
+    ARGS=({{ args }})
+    FIRST="${ARGS[0]:-}"
+    REST="${ARGS[@]:1}"
+    if [ "$FIRST" = "left" ]; then
+        python3 -m prowrist_demo.connect --endpoint "ipc:///tmp/prowristcam-left-stream.ipc" $REST
+    elif [ "$FIRST" = "right" ]; then
+        python3 -m prowrist_demo.connect --endpoint "ipc:///tmp/prowristcam-right-stream.ipc" $REST
+    else
+        python3 -m prowrist_demo.connect {{ args }}
+    fi
+
+# Run test-wristcam: test-wristcam left|right [options] OR test-wristcam --endpoint <endpoint>
+test-wristcam +args:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd src
+    ARGS=({{ args }})
+    FIRST="${ARGS[0]:-}"
+    REST="${ARGS[@]:1}"
+    if [ "$FIRST" = "left" ]; then
+        python3 -m prowrist_demo.test_wristcam --endpoint "ipc:///tmp/prowristcam-left-stream.ipc" $REST
+    elif [ "$FIRST" = "right" ]; then
+        python3 -m prowrist_demo.test_wristcam --endpoint "ipc:///tmp/prowristcam-right-stream.ipc" $REST
+    else
+        python3 -m prowrist_demo.test_wristcam {{ args }}
+    fi
+
+# Usage: view-wristcam left|right [options]
+view-wristcam +args:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd src
+    ARGS=({{ args }})
+    FIRST="${ARGS[0]:-}"
+    REST="${ARGS[@]:1}"
+    if [ "$FIRST" = "left" ]; then
+        python3 -m prowrist_demo.viewer --endpoint "ipc:///tmp/prowristcam-left-stream.ipc" $REST
+    elif [ "$FIRST" = "right" ]; then
+        python3 -m prowrist_demo.viewer --endpoint "ipc:///tmp/prowristcam-right-stream.ipc" $REST
+    else
+        python3 -m prowrist_demo.viewer {{ args }}
+    fi
+
+# Run all basic demos in sequence
+demo-all:
+    @echo "Running all demos..."
+    @echo "\n=== Connection Test ==="
+    just connect
+    @echo "\n=== Ping Test ==="
+    just ping --count 3
+
+# Check Python and SDK availability
+check:
+    @python3 --version
+    @python3 -c "import sys; sys.path.insert(0, '../prohand_sdk/python'); import prohand_sdk; print(f'ProHand SDK: {prohand_sdk.get_version()}')"
+    @python3 -c "import sys; sys.path.insert(0, '../proglove_sdk/python'); import proglove_sdk; print(f'ProGlove SDK: {proglove_sdk.get_version()}')"
+    @python3 -c "import sys; sys.path.insert(0, '../prowrist_sdk/python'); import prowrist_sdk; print(f'ProWristCam SDK: {prowrist_sdk.get_version()}')"
+
+# Show help for all demos
+help-all:
+    @echo "=== ProHand Demos ==="
+    @cd src && python3 -m prohand_demo.connect --help
+    @echo "\n=== Ping ==="
+    @cd src && python3 -m prohand_demo.ping --help
+    @echo "\n=== Test Hand ==="
+    @cd src && python3 -m prohand_demo.test_hand --help
+    @echo "\n=== Cyclic Motion ==="
+    @cd src && python3 -m prohand_demo.cyclic_motion --help
+    @echo "\n=== Kapandji ==="
+    @cd src && python3 -m prohand_demo.kapandji --help
+    @echo "\n=== ProGlove Demos ==="
+    @echo "=== Connect Glove ==="
+    @cd src && python3 -m proglove_demo.connect --help
+    @echo "\n=== Test Glove ==="
+    @cd src && python3 -m proglove_demo.test_glove --help
+    @echo "\n=== Filter Control ==="
+    @cd src && python3 -m proglove_demo.filter_control --help
+    @echo "\n=== Test OTA ==="
+    @cd src && python3 -m proglove_demo.test_ota --help
+    @echo "\n=== ProWristCam Demos ==="
+    @echo "=== Connect WristCam ==="
+    @cd src && python3 -m prowrist_demo.connect --help
+    @echo "\n=== Test WristCam ==="
+    @cd src && python3 -m prowrist_demo.test_wristcam --help
+    @echo "\n=== View WristCam (Live GUI) ==="
+    @cd src && python3 -m prowrist_demo.viewer --help

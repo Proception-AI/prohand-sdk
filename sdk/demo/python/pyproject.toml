@@ -1,0 +1,59 @@
+[project]
+name = "prohand-demo"
+version = "0.1.0"
+description = "ProHand SDK Demo Examples - cdylib FFI"
+requires-python = ">=3.8"
+dependencies = ["Pillow"]
+
+[project.optional-dependencies]
+dev = ["ruff", "pyright>=1.1.400", "pytest"]
+# `proglove-rerun` / `prohand-rerun` log to Rerun (rerun.io).
+rerun = ["rerun-sdk>=0.20", "numpy"]
+
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["prohand_demo", "proglove_demo", "prowrist_demo"]
+package-dir = { "prohand_demo" = "src/prohand_demo", "proglove_demo" = "src/proglove_demo", "prowrist_demo" = "src/prowrist_demo" }
+
+[tool.setuptools.package-data]
+# Bundle the taxel-geometry SVGs so the palm viz works from an installed wheel.
+proglove_demo = ["assets/*.svg"]
+
+[project.scripts]
+# ProHand demos
+prohand-connect = "prohand_demo.connect:main"
+prohand-ping = "prohand_demo.ping:main"
+prohand-test-hand = "prohand_demo.test_hand:main"
+prohand-cyclic-motion = "prohand_demo.cyclic_motion:main"
+prohand-kapandji = "prohand_demo.kapandji:main"
+prohand-keyframe-motion = "prohand_demo.keyframe_motion:main"
+prohand-command-matrix = "prohand_demo.command_matrix:main"
+prohand-show-all = "prohand_demo.show_all:main"
+prohand-rerun = "prohand_demo.rerun_log:main"
+udcap-ctrl = "prohand_demo.udcap_ctrl:main"
+# ProGlove demos
+proglove-test-glove = "proglove_demo.test_glove:main"
+proglove-filter-control = "proglove_demo.filter_control:main"
+proglove-test-ota = "proglove_demo.test_ota:main"
+proglove-rerun = "proglove_demo.rerun_log:main"
+# ProWristCam demos
+prowristcam-connect = "prowrist_demo.connect:main"
+prowristcam-test = "prowrist_demo.test_wristcam:main"
+prowristcam-view = "prowrist_demo.viewer:main"
+
+[tool.uv]
+dev-dependencies = []
+
+[tool.uv.sources]
+# No external dependencies - we load the SDK from relative path
+
+[tool.pyright]
+stubPath = "../../../../typings"
+extraPaths = [
+  "../../prohand_sdk/python",
+  "../../proglove_sdk/python",
+  "../../prowrist_sdk/python",
+]

@@ -1,0 +1,54 @@
+# ProHand/ProGlove udev rules for Linux
+# Provides access for both raw USB (nusb/rusb/libusb) and serial port (tty) subsystems
+#
+# USAGE MODES:
+#   Mode A (default): Kernel driver creates /dev/ttyUSB* - use "just run --port /dev/ttyUSB0"
+#   Mode B: Raw USB access for "just run-auto" - uncomment UNBIND section below
+#
+# After editing, run:
+#   sudo udevadm control --reload-rules && sudo udevadm trigger
+#   Then unplug and replug the device
+
+# ============================================================================
+# RAW USB ACCESS (required for usb-discovery, usb-serial-bridge, direct USB)
+# Grants permission to access device via libusb/rusb/nusb
+# ============================================================================
+# ProHand (CP2104)
+SUBSYSTEM=="usb", ATTR{idVendor}=="10c4", ATTR{idProduct}=="ea60", MODE="0666", GROUP="plugdev"
+# ProGlove (CP2102N)
+SUBSYSTEM=="usb", ATTR{idVendor}=="10c4", ATTR{idProduct}=="ea61", MODE="0666", GROUP="plugdev"
+# ProHand STM (native USB, no bridge chip — no tty/unbind rules needed)
+SUBSYSTEM=="usb", ATTR{idVendor}=="10c4", ATTR{idProduct}=="ea62", MODE="0666", GROUP="plugdev"
+
+# ============================================================================
+# UNBIND KERNEL DRIVER (for "just run-auto" / raw USB mode)
+# These rules PREVENT kernel cp210x driver from claiming device
+# This allows userspace USB access but DISABLES /dev/ttyUSB* serial ports!
+# Only affects devices with serial numbers starting with "PRO-" (ProHand/ProGlove)
+# Other CP210x devices (e.g. generic USB-serial adapters) are not affected
+# Comment these out if you need /dev/ttyUSB* for "just run --port"
+# ============================================================================
+# ProHand - unbind cp210x driver (only PRO-H* serials)
+ACTION=="bind", SUBSYSTEM=="usb", ATTR{idVendor}=="10c4", ATTR{idProduct}=="ea60", ATTR{serial}=="PRO-*", RUN+="/bin/sh -c 'echo $kernel > /sys/bus/usb/drivers/cp210x/unbind 2>/dev/null || true'"
+# ProGlove - unbind cp210x driver (only PRO-G* serials)
+ACTION=="bind", SUBSYSTEM=="usb", ATTR{idVendor}=="10c4", ATTR{idProduct}=="ea61", ATTR{serial}=="PRO-*", RUN+="/bin/sh -c 'echo $kernel > /sys/bus/usb/drivers/cp210x/unbind 2>/dev/null || true'"
+
+# ============================================================================
+# SERIAL PORT ACCESS (when kernel driver creates /dev/ttyUSB*)
+# Only works for devices that are not PRO-* ,
+#        or comment out UNBIND rules above are commented out to be effective
+# ENV{ID_MM_DEVICE_IGNORE} prevents ModemManager from probing the device
+# power/control="on" disables USB autosuspend (CP210x power-save issue)
+# ============================================================================
+# ProHand
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", MODE="0666", GROUP="plugdev", ENV{ID_MM_DEVICE_IGNORE}="1", TEST=="power/control", ATTR{power/control}="on"
+# ProGlove
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea61", MODE="0666", GROUP="plugdev", ENV{ID_MM_DEVICE_IGNORE}="1", TEST=="power/control", ATTR{power/control}="on"
+
+# ============================================================================
+# SYMLINK CREATION (optional - creates predictable device names)
+# Only works if UNBIND rules above are commented out
+# ============================================================================
+# Creates /dev/prohand and /dev/proglove symlinks when devices are connected
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", SYMLINK+="prohand"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea61", SYMLINK+="proglove"

@@ -1,0 +1,23 @@
+[project]
+name = "prowrist-sdk"
+version = "0.1.0"
+description = "ProWristCam Client SDK - Python bindings (ctypes FFI)"
+requires-python = ">=3.8"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["ruff", "pyright>=1.1.400", "pytest"]
+
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["prowrist_sdk"]
+package-dir = { "prowrist_sdk" = "prowrist_sdk" }
+
+[tool.uv]
+dev-dependencies = []
+
+[tool.pyright]
+stubPath = "../../../../typings"

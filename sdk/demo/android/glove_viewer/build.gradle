@@ -1,0 +1,29 @@
+plugins {
+    id 'com.android.application' version '8.13.2'
+}
+
+android {
+    namespace 'ai.proception.glove.viewer'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'ai.proception.glove.viewer'
+        minSdk 24
+        targetSdk 35
+        versionCode 1
+        versionName '1.0'
+        ndk {
+            // The SDK ships arm64 only — the glove needs a physical device.
+            abiFilters 'arm64-v8a'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation files('../../../proglove_sdk/android/aar/proception-glove.aar')
+}

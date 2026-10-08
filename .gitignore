@@ -1,0 +1,58 @@
+# Proception SDK .gitignore
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Linux
+*~
+.directory
+.Trash-*
+
+
+# Rust (if building from source)
+target/
+**/*.rs.bk
+*.pdb
+Cargo.lock
+
+# Cpp
+**/build/
+
+# Python
+__pycache__/
+**/__pycache__/
+*.egg-info/
+**/*.egg-info/
+.venv/
+**/.venv/
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+
+# Temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+*.cache
+*.pid
+*.seed
+*.pid.lock
+
+# OS-specific
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Documentation build artifacts  
+site/
+docs/_build/
+
+# ZeroMQ/IPC runtime
+*.ipc
+*.sock
+
