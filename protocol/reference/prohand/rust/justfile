@@ -1,0 +1,13 @@
+set allow-duplicate-recipes
+
+# Build the library and the quickstart.
+build:
+    cargo build --release --examples
+
+# The client's own tests; the wire fixtures are checked from prohand-capnp.
+test:
+    cargo test
+
+# Ping a driver, turn streaming on, stream an open-hand command, print status.
+quickstart host="tcp://127.0.0.1":
+    cargo run --release --example quickstart -- {{ host }}

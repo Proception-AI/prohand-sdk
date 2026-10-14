@@ -43,3 +43,9 @@ packages = ["prohand_sdk"]
 # No package_data needed for library files
 
 [tool.pyright]
+
+# The repo-wide rules, at this package's own minimum Python: without it ruff
+# assumes 3.10 and rewrites annotations into syntax 3.7–3.9 cannot import.
+[tool.ruff]
+extend = "../../../../../ruff.toml"
+target-version = "py37"

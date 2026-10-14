@@ -1,0 +1,12 @@
+# Configure and build the library, the quickstart and the wire-contract test.
+build:
+    cmake -S . -B build
+    cmake --build build
+
+# Decode the driver's status fixture and match the Python client's command bytes.
+test: build
+    ctest --test-dir build --output-on-failure
+
+# Ping a driver, turn streaming on, send one open-hand command, print status.
+quickstart host="tcp://127.0.0.1": build
+    ./build/quickstart {{ host }}

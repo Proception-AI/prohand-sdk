@@ -784,6 +784,81 @@ public:
   }
 
   /**
+   * Play a slot of the hand's motion library.
+   *
+   * @param speedPercent 25-400; 100 plays as stored
+   * @param effortPercent finger torque scale, 0-200; no torque exceeds full
+   * @param loops passes; empty = the slot's own count, 0 = forever
+   * @param startAtEpochUs UNIX time [us] at which the first pose plays, so
+   *        hands given the same time play in step; empty = at once
+   * @param queue play after the slots already playing or queued
+   */
+  void playMotion(uint16_t slot, uint16_t speedPercent = 100,
+                  uint16_t effortPercent = 100,
+                  std::optional<uint16_t> loops = std::nullopt,
+                  std::optional<uint64_t> startAtEpochUs = std::nullopt,
+                  bool queue = false) {
+    checkHandle();
+    auto result =
+        prohand_motion_play(handle_, slot, speedPercent, effortPercent,
+                            loops ? static_cast<int>(*loops) : -1,
+                            startAtEpochUs.value_or(0), queue ? 1 : 0);
+    checkResult(result, "playMotion");
+  }
+
+  /** Stop the slot playing and clear the queue. */
+  void stopMotion() {
+    checkHandle();
+    checkResult(prohand_motion_stop(handle_), "stopMotion");
+  }
+
+  /** Freeze the slot playing; its clock stops until resumeMotion(). */
+  void pauseMotion() {
+    checkHandle();
+    checkResult(prohand_motion_pause(handle_), "pauseMotion");
+  }
+
+  void resumeMotion() {
+    checkHandle();
+    checkResult(prohand_motion_resume(handle_), "resumeMotion");
+  }
+
+  /** Move back to the slot's first pose: a grasp opens. */
+  void releaseMotion() {
+    checkHandle();
+    checkResult(prohand_motion_release(handle_), "releaseMotion");
+  }
+
+  /** Ask for the library and player state, then one message per slot. */
+  void queryMotion() {
+    checkHandle();
+    checkResult(prohand_motion_query(handle_), "queryMotion");
+  }
+
+  /** The slot the hand plays by itself; empty turns it off. */
+  void setMotionAutoplay(std::optional<uint16_t> slot) {
+    checkHandle();
+    checkResult(prohand_motion_set_autoplay(
+                    handle_, slot ? static_cast<int>(*slot) : -1),
+                "setMotionAutoplay");
+  }
+
+  /**
+   * Upload a packed library image (motion-pack output) and make it the
+   * hand's library. Blocks until the hand commits it.
+   *
+   * @return the library's write counter
+   */
+  uint32_t uploadMotionLibrary(const std::vector<uint8_t> &image) {
+    checkHandle();
+    uint32_t seq = 0;
+    checkResult(
+        prohand_motion_upload(handle_, image.data(), image.size(), &seq),
+        "uploadMotionLibrary");
+    return seq;
+  }
+
+  /**
    * Try to receive the next status message (non-blocking)
    *
    * Covers every message kind the firmware publishes. Switch on `kind` and read

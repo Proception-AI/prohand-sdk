@@ -33,7 +33,9 @@ check:
     missing=0
     for entry in {{ SDK_LIBS }}; do
         dir="${entry%%:*}"; base="${entry##*:}"; f="$dir/lib/${base}${suffix}"
-        if [[ -f "$f" ]]; then echo "  ✓ $f"; else echo "  ✗ MISSING $f"; missing=1; fi
+        if [[ ! -f "$f" ]]; then echo "  ✗ MISSING $f"; missing=1
+        elif [[ $(wc -c < "$f") -lt 4096 ]]; then echo "  ✗ $f is a Git LFS pointer, not a library (git lfs pull)"; missing=1
+        else echo "  ✓ $f"; fi
     done
     [[ $missing -eq 0 ]] && echo "All libraries present." || { echo "Some libraries are missing."; exit 1; }
 

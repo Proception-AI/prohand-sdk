@@ -35,14 +35,14 @@ with ProHandClient(
     "tcp://127.0.0.1:5562",  # Command endpoint
     "tcp://127.0.0.1:5561",  # Status endpoint
     "tcp://127.0.0.1:5563",  # Hand streaming endpoint
-    "tcp://127.0.0.1:5564"   # Wrist streaming endpoint
+    "tcp://127.0.0.1:5564",  # Wrist streaming endpoint
 ) as client:
     # Send commands
     client.send_ping()
 
     # Control joints
     positions = [0.0] * 16  # Radians
-    torques = [0.45] * 16   # Normalized 0.0-1.0
+    torques = [0.45] * 16  # Normalized 0.0-1.0
     client.send_rotary_commands(positions, torques)
 
     # Poll status
@@ -230,8 +230,10 @@ severity, a percentage does.
 
 ```python
 for load in client.thermal_load():
-    print(f"actuator {load.actuator}: warning {load.warning_percent}% "
-          f"lockdown {load.lockdown_percent}% peak {load.peak_temp_c}C")
+    print(
+        f"actuator {load.actuator}: warning {load.warning_percent}% "
+        f"lockdown {load.lockdown_percent}% peak {load.peak_temp_c}C"
+    )
 ```
 
 Counted on the raw status stream, ahead of the client-side warning debounce, so
@@ -315,7 +317,7 @@ client = ProHandClient(
     "tcp://127.0.0.1:5562",  # Command endpoint
     "tcp://127.0.0.1:5561",  # Status endpoint
     "tcp://127.0.0.1:5563",  # Hand streaming endpoint
-    "tcp://127.0.0.1:5564"   # Wrist streaming endpoint
+    "tcp://127.0.0.1:5564",  # Wrist streaming endpoint
 )
 
 # Enable streaming mode
@@ -343,7 +345,7 @@ try:
         "tcp://127.0.0.1:5562",  # Command endpoint
         "tcp://127.0.0.1:5561",  # Status endpoint
         "tcp://127.0.0.1:5563",  # Hand streaming endpoint
-        "tcp://127.0.0.1:5564"   # Wrist streaming endpoint
+        "tcp://127.0.0.1:5564",  # Wrist streaming endpoint
     )
     client.send_ping()
 except ConnectionError as e:

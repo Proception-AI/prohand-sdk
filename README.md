@@ -3,9 +3,9 @@
 Official SDK and drivers for the **ProHand** robotic hand, the **ProGlove**
 tactile sensing glove, and the **ProWristCam**.
 
-**Current Version**: 0.4.13.0 on the `gen2` product line
-(branch `release/gen2`, tag `gen2/0.4.13.0`), built against ProHand
-firmware 1.4.0.0. Driver and firmware must come from the same product
+**Current Version**: 0.4.25.0 on the `gen2` product line
+(branch `release/gen2`, tag `gen2/0.4.25.0`), built against ProHand
+firmware 1.4.21.0. Driver and firmware must come from the same product
 line; the README on `main` lists the lines.
 
 The SDK is a C FFI dynamic library (`cdylib`) with ready-to-use **Python**
@@ -272,7 +272,7 @@ tag named `<line>/<sdk-version>`:
 ```bash
 git clone --branch release/gen2 --single-branch https://github.com/Proception-AI/prohand-sdk.git
 git tag -l 'gen2/*'      # releases of this line
-git checkout gen2/0.4.13.0         # pin to this release
+git checkout gen2/0.4.25.0         # pin to this release
 ```
 
 Other product lines have their own branches; see the README on `main`.

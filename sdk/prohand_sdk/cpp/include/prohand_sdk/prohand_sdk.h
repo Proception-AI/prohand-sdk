@@ -36,6 +36,11 @@
 #define LINEAR_COUNT 2
 
 /**
+ * Sends of one chunk before the upload gives up.
+ */
+#define CHUNK_TRIES 6
+
+/**
  * Host-side OTA chunk size, in bytes. Deliberately NOT
  * `OTA_MAX_CHUNK_SIZE`: that is a per-binary RECEIVE bound which feature
  * unification can raise to 96 in some hosts (proglove-messages enables
@@ -176,6 +181,10 @@
 #define PROHAND_MSG_LED_BRIGHTNESS 120
 
 #define PROHAND_MSG_LED_OVERRIDE 121
+
+#define PROHAND_MSG_STORE 128
+
+#define PROHAND_MSG_MOTION 129
 
 #define PROHAND_CALIB_ABORT 0
 
@@ -1341,6 +1350,70 @@ prohand_send_wrist_command(const struct ProHandClientHandle *handle,
 enum ProHandResult
 prohand_send_wrist_streams(const struct ProHandClientHandle *handle,
                            const float *positions, bool use_profiler);
+
+/**
+ * Play slot `slot` of the hand's motion library.
+ *
+ * - `speed_percent`: 25..=400; 100 plays as stored.
+ * - `effort_percent`: finger torque scale, 0..=200; no torque exceeds full.
+ * - `loops`: passes; -1 = the slot's own count, 0 = forever.
+ * - `start_at_epoch_us`: UNIX time [µs] at which the slot's first pose plays,
+ *   so hands given the same time play in step; 0 = at once.
+ * - `queue`: nonzero plays it after the slots already playing or queued.
+ *
+ * The hand answers with a `PROHAND_MSG_MOTION` event: scheduled or started,
+ * else refused.
+ */
+enum ProHandResult prohand_motion_play(const struct ProHandClientHandle *handle,
+                                       uint16_t slot, uint16_t speed_percent,
+                                       uint16_t effort_percent, int loops,
+                                       uint64_t start_at_epoch_us, int queue);
+
+/**
+ * Stop the slot playing and clear the queue; the hand stays where it is.
+ */
+enum ProHandResult
+prohand_motion_stop(const struct ProHandClientHandle *handle);
+
+/**
+ * Freeze the slot playing; its clock stops until `prohand_motion_resume`.
+ */
+enum ProHandResult
+prohand_motion_pause(const struct ProHandClientHandle *handle);
+
+enum ProHandResult
+prohand_motion_resume(const struct ProHandClientHandle *handle);
+
+/**
+ * Move back to the slot's first pose: a grasp opens.
+ */
+enum ProHandResult
+prohand_motion_release(const struct ProHandClientHandle *handle);
+
+/**
+ * Ask for the library and player state, then one message per slot.
+ */
+enum ProHandResult
+prohand_motion_query(const struct ProHandClientHandle *handle);
+
+/**
+ * The slot the hand plays by itself when no host drives it; -1 turns it off.
+ */
+enum ProHandResult
+prohand_motion_set_autoplay(const struct ProHandClientHandle *handle, int slot);
+
+/**
+ * Upload a packed library image (`motion-pack` output, first bank) and make
+ * it the hand's library. Blocks until the hand commits it; the library's
+ * write counter goes to `out_library_seq`.
+ *
+ * # Safety
+ * `image` must point to `len` readable bytes; `out_library_seq` must be valid.
+ */
+enum ProHandResult
+prohand_motion_upload(const struct ProHandClientHandle *handle,
+                      const uint8_t *image, size_t len,
+                      uint32_t *out_library_seq);
 
 /**
  * Discover connected ProHand USB devices

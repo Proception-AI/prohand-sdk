@@ -51,7 +51,7 @@ dev-dependencies = []
 # No external dependencies - we load the SDK from relative path
 
 [tool.pyright]
-stubPath = "../../../../typings"
+stubPath = "../../../../../typings"
 extraPaths = [
   "../../prohand_sdk/python",
   "../../proglove_sdk/python",
