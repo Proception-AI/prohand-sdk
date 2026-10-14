@@ -9,7 +9,6 @@ Build Date: 2026-10-14 01:51:18 UTC
 - **prohand-headless-ipc-host**: ProHand IPC host driver
 - **proglove-headless-ipc-host**: ProGlove IPC host driver
 - **prowristcam-headless-ipc-host**: ProWristCam IPC host driver
-- **udcap-ctrl**: UDP capture control for dual-arm systems
 
 ## Usage
 

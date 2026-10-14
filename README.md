@@ -88,7 +88,6 @@ Each `driver/<platform>/` folder contains:
 - `prohand-headless-ipc-host` — ProHand driver
 - `proglove-headless-ipc-host` — ProGlove driver
 - `prowristcam-headless-ipc-host` — ProWristCam driver
-- `udcap-ctrl` — UDP capture control for dual-arm systems
 - `VERSION`, `PLATFORM`
 
 ## Quick Start

@@ -40,7 +40,6 @@ Platform-specific driver bundles, unpacked:
 - `prohand-headless-ipc-host` - ProHand IPC host driver
 - `proglove-headless-ipc-host` - ProGlove IPC host driver
 - `prowristcam-headless-ipc-host` - ProWristCam IPC host driver
-- `udcap-ctrl` - USB device capture / control utility
 
 Firmware and the desktop application ship through their own channels; the
 versions above say which ones this release was built against.
