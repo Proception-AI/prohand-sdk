@@ -8,11 +8,14 @@
 # ============================================================================
 # RAW USB ACCESS (required for usb-serial-bridge)
 # ============================================================================
-# CP210x USB-to-serial (wireless dongle / ProGlove v0)
+# BEGIN def-usb-products usb
+# glove-cp210x
 SUBSYSTEM=="usb", ATTR{idVendor}=="10c4", ATTR{idProduct}=="ea61", MODE="0666", GROUP="plugdev"
-
-# ProGlove V1 STM32 direct USB (CDC ACM)
+# glove-v1
 SUBSYSTEM=="usb", ATTR{idVendor}=="0483", ATTR{idProduct}=="5741", MODE="0666", GROUP="plugdev"
+# ProGlove (legacy)
+SUBSYSTEM=="usb", ATTR{idVendor}=="c0de", ATTR{idProduct}=="cafe", MODE="0666", GROUP="plugdev"
+# END def-usb-products usb
 
 # ============================================================================
 # UNBIND KERNEL DRIVER (for raw USB / usb-serial-bridge mode)
@@ -33,8 +36,14 @@ ACTION=="bind", SUBSYSTEM=="usb", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea
 # SERIAL PORT ACCESS (when kernel driver creates /dev/tty*)
 # Only effective when the UNBIND rules above are commented out.
 # ============================================================================
+# BEGIN def-usb-products tty
+# glove-cp210x
 SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea61", MODE="0666", GROUP="plugdev", ENV{ID_MM_DEVICE_IGNORE}="1"
+# glove-v1
 SUBSYSTEM=="tty", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5741", MODE="0666", GROUP="plugdev", ENV{ID_MM_DEVICE_IGNORE}="1"
+# ProGlove (legacy)
+SUBSYSTEM=="tty", ATTRS{idVendor}=="c0de", ATTRS{idProduct}=="cafe", MODE="0666", GROUP="plugdev", ENV{ID_MM_DEVICE_IGNORE}="1"
+# END def-usb-products tty
 
 # ============================================================================
 # SYMLINKS

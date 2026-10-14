@@ -1,0 +1,22 @@
+[package]
+name = "prohand-client"
+version = "0.4.25"
+edition = "2021"
+license = "LicenseRef-Proception-SDK"
+description = "ProHand protocol reference client: commands, streams and status over ZeroMQ and Cap'n Proto"
+repository = "https://github.com/Proception-AI/prohand-sdk"
+homepage = "https://proception.ai"
+readme = "README.md"
+publish = false
+
+[dependencies]
+zeromq = "0.5.0-pre"
+futures = "0.3"
+tokio = { version = "1", features = ["rt", "time"] }
+thiserror = "1"
+
+# Cap'n Proto - always needed for serialization
+capnp = "0.19"
+
+[build-dependencies]
+capnpc = "0.19"

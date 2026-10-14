@@ -1,0 +1,27 @@
+[project]
+name = "prohand-client"
+version = "0.4.25"
+description = "ProHand protocol reference client: commands, streams and status over ZeroMQ and Cap'n Proto"
+readme = "README.md"
+license = "LicenseRef-Proception-SDK"
+requires-python = ">=3.10"
+dependencies = ["pyzmq>=25.0.0", "pycapnp>=2.0.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0.0", "ruff>=0.1.0", "pyright>=1.1.400"]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["prohand_client"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.pyright]
+# Shared stubs for pycapnp live at the monorepo root; outside it this path is
+# absent and pyright falls back to the package's own typing.
+stubPath = "../../../../../../typings"
+exclude = ["**/node_modules", "**/__pycache__", "**/.*", "build/"]

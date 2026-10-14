@@ -1,0 +1,11 @@
+# Install the client and its test tools into .venv.
+sync:
+    uv sync --all-extras
+
+# Decode the driver's status fixture and keep the command fixture current.
+test:
+    uv run pytest
+
+# Ping a driver, turn streaming on, send one open-hand command, print status.
+quickstart host="tcp://127.0.0.1":
+    uv run python -m prohand_client {{ host }}

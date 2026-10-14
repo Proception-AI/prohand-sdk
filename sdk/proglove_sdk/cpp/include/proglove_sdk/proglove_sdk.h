@@ -62,31 +62,28 @@ typedef struct {
                                with proglove_free_string() */
 } ProGloveUsbDeviceInfo;
 
-/* Taxel array sizes per segment (from taxel_mapping_v0.yaml) */
-/* Thumb segments (larger than other fingers) */
+/* Taxel array sizes per segment, in wire order. Generated from
+ * glove-rt/crates/proglove-config; see its tests/generated_tables.rs. */
+// BEGIN proglove-config taxels
 #define PROGLOVE_TAXELS_T_DIP 6
 #define PROGLOVE_TAXELS_T_MCP 10
 #define PROGLOVE_TAXELS_T_PIP 4
-/* Index finger segments */
 #define PROGLOVE_TAXELS_I_DIP 4
 #define PROGLOVE_TAXELS_I_MCP 2
 #define PROGLOVE_TAXELS_I_PIP 2
-/* Middle finger segments */
 #define PROGLOVE_TAXELS_M_DIP 4
 #define PROGLOVE_TAXELS_M_MCP 2
 #define PROGLOVE_TAXELS_M_PIP 2
-/* Ring finger segments */
 #define PROGLOVE_TAXELS_R_DIP 4
 #define PROGLOVE_TAXELS_R_MCP 2
 #define PROGLOVE_TAXELS_R_PIP 2
-/* Pinky finger segments */
 #define PROGLOVE_TAXELS_P_DIP 4
 #define PROGLOVE_TAXELS_P_MCP 2
 #define PROGLOVE_TAXELS_P_PIP 2
-/* Palm segments */
 #define PROGLOVE_TAXELS_UPPER_PALM 16
 #define PROGLOVE_TAXELS_MIDDLE_PALM 16
 #define PROGLOVE_TAXELS_LOWER_PALM 16
+// END proglove-config taxels
 
 /**
  * Tactile status from glove sensors (segment-based, u16 taxels, 12-bit ADC)

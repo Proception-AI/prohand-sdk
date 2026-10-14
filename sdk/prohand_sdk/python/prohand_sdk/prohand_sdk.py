@@ -47,34 +47,39 @@ Requirements:
       - Or set PROHAND_SDK_LIB environment variable
 """
 
+from __future__ import annotations
+
 import ctypes
 import logging
 import os
 import sys
 from ctypes import (
     POINTER,
-    Union as CUnion,
+    Structure,
+    byref,
+    c_bool,
     c_char,
     c_char_p,
+    c_float,
     c_int,
     c_int8,
     c_int16,
     c_int32,
-    c_float,
     c_short,
-    c_bool,
     c_uint8,
     c_uint16,
     c_uint32,
     c_uint64,
-    Structure,
-    byref,
     pointer,
     string_at,
 )
-from typing import List, Optional, Union
+from ctypes import (
+    Union as CUnion,
+)
 from dataclasses import dataclass
 from enum import IntEnum
+
+from ._ffi_constants import CalibrationMask, MessageKind, ProHandResult
 
 logger = logging.getLogger(__name__)
 
@@ -122,17 +127,8 @@ def _find_library():
     if os.path.exists(lib_path):
         return lib_path
 
-    # Try loading from system library path
-    try:
-        return lib_name
-    except Exception:
-        raise RuntimeError(
-            f"Could not find ProHand SDK library. "
-            f"Expected '{lib_name}' in:\n"
-            f"  - {os.path.join(script_dir, '..', '..', 'lib')}\n"
-            f"  - System library path\n"
-            f"  - Or set PROHAND_SDK_LIB environment variable"
-        )
+    # Not in ../lib/: let the loader search the system library path.
+    return lib_name
 
 
 # Load the library
@@ -142,31 +138,10 @@ _lib = ctypes.CDLL(_lib_path)
 
 # ============================================================================
 # ENUMS AND CONSTANTS
+#
+# ProHandResult, CalibrationMask and MessageKind are generated from the C header
+# into _ffi_constants.py. The enums below have no constants in the header.
 # ============================================================================
-
-
-class ProHandResult(IntEnum):
-    """Result codes returned by SDK functions"""
-
-    SUCCESS = 0
-    ERROR_NULL = -1
-    ERROR_CONNECTION = -2
-    ERROR_INVALID_ARGUMENT = -3
-    ERROR_NOT_CONNECTED = -4
-    ERROR_UNSUPPORTED = -5
-    ERROR_OTHER = -99
-
-
-class CalibrationMask(IntEnum):
-    """Finger bitmask values for send_auto_calibration(). OR them together."""
-
-    ABORT = 0b00000
-    THUMB = 0b00001
-    INDEX = 0b00010
-    MIDDLE = 0b00100
-    RING = 0b01000
-    PINKY = 0b10000
-    ALL = 0b11111
 
 
 # ============================================================================
@@ -176,8 +151,6 @@ class CalibrationMask(IntEnum):
 
 class ProHandClientHandle(Structure):
     """Opaque handle to ProHand client (do not instantiate directly)"""
-
-    pass
 
 
 class ProHandUsbDeviceInfo(Structure):
@@ -218,47 +191,6 @@ ROTARY_COUNT = 16
 LINEAR_COUNT = 2
 JOINT_COUNT = 20
 WRIST_JOINT_COUNT = 2
-
-
-class MessageKind(IntEnum):
-    """Wire discriminant of `ProHandStatus`. Values are the protocol's, not ours."""
-
-    NONE = -1
-    PONG = 0
-    HAND_REQUEST_ECHO = 1
-    ROTARY_STATE = 2
-    LINEAR_STATE = 3
-    HAND_STATE = 4
-    ROTARY_GRP_STATUS = 5
-    LINEAR_GRP_STATUS = 6
-    ROTARY_GRP_TARGET = 7
-    LINEAR_GRP_TARGET = 8
-    HANDEDNESS = 9
-    IMU_STATUS = 10
-    IMU_STATE = 11
-    TIME_SYNC_ACK = 12
-    ALERT = 13
-    CURRENT_SENSE_STATUS = 14
-    CURRENT_SENSE_STATE = 15
-    HAND_JOINT_TARGET = 16
-    WRIST_JOINT_TARGET = 17
-    HAND_JOINT_STATUS = 18
-    WRIST_JOINT_STATUS = 19
-    # Host-synthesized per-signal alert rate. Consumed into the thermal-load
-    # cache inside the dylib; read it with thermal_load(), not try_recv_message().
-    HEALTH_STATUS = 20
-    # Service side — reported by kind, payload not exposed here.
-    ROTARY_SRV_STATUS = 100
-    LINEAR_SRV_STATUS = 101
-    OTA_STATUS = 102
-    METADATA = 103
-    CALIBRATION_RAMP_SAMPLE = 104
-    CALIBRATION_TRIM = 105
-    CALIBRATION_PROGRESS = 106
-    POSITION_CORRECTION_SNAPSHOT = 107
-    TX_DROP_REPORT = 108
-    IMU_TUNING_CONFIG = 109
-    IDENTITY_RESPONSE = 110
 
 
 class AlertSource(IntEnum):
@@ -444,7 +376,7 @@ class _StateInfoC(Structure):
 
 
 class _MessagePayloadC(CUnion):
-    _fields_ = [
+    _fields_ = [  # noqa: RUF012 — ctypes reads `_fields_` once, at class creation
         ("rotary_status", _RotaryStatusStampedC),
         ("rotary_target", _RotaryTargetStampedC),
         ("linear_status", _LinearStatusStampedC),
@@ -593,11 +525,11 @@ class RotaryStatusFrame:
     """Rotary servo feedback. Positions are raw FT3950 counts (0–4095, neutral 2048)."""
 
     timestamp_ms: int
-    positions: List[int]
-    velocities: List[int]
-    torques: List[int]  # 0–1000
-    temperatures_c: List[int]
-    voltages: List[int]  # 0.1 V units
+    positions: list[int]
+    velocities: list[int]
+    torques: list[int]  # 0–1000
+    temperatures_c: list[int]
+    voltages: list[int]  # 0.1 V units
 
 
 @dataclass
@@ -605,9 +537,9 @@ class RotaryTargetFrame:
     """Commanded rotary targets, as applied to the bus. Counts, torque cap, velocity cap."""
 
     timestamp_ms: int
-    positions: List[int]
-    torque_caps: List[int]
-    velocity_caps: List[int]
+    positions: list[int]
+    torque_caps: list[int]
+    velocity_caps: list[int]
 
 
 @dataclass
@@ -615,18 +547,18 @@ class LinearStatusFrame:
     """Linear actuator feedback. Positions in 0.01 mm."""
 
     timestamp_ms: int
-    positions: List[int]
-    currents_ma: List[int]
-    speeds: List[int]
-    errors: List[int]
-    temperatures_c: List[int]
+    positions: list[int]
+    currents_ma: list[int]
+    speeds: list[int]
+    errors: list[int]
+    temperatures_c: list[int]
 
 
 @dataclass
 class LinearTargetFrame:
     timestamp_ms: int
-    positions: List[int]
-    speed_caps: List[int]
+    positions: list[int]
+    speed_caps: list[int]
 
 
 @dataclass
@@ -639,8 +571,8 @@ class JointFrame:
     """
 
     timestamp_ms: int
-    positions_rad: List[float]
-    vel_or_tau: List[float]
+    positions_rad: list[float]
+    vel_or_tau: list[float]
     is_target: bool
     is_wrist: bool
     sequence: int = 0
@@ -651,9 +583,9 @@ class JointFrame:
 @dataclass
 class ImuFrame:
     timestamp_ms: int
-    accel_mps2: List[float]
-    gyro_rps: List[float]
-    quaternion_wxyz: List[float]
+    accel_mps2: list[float]
+    gyro_rps: list[float]
+    quaternion_wxyz: list[float]
     temperature_c: float
 
 
@@ -675,7 +607,7 @@ class AlertFrame:
     severity: AlertSeverity
     code: int
     detail: int
-    actuator: Optional[int]  # None when not actuator-specific
+    actuator: int | None  # None when not actuator-specific
     thermal_event: ThermalEvent
 
 
@@ -749,7 +681,7 @@ class AlertReport:
     """
 
     #: The first occurrence, or for a summary the hottest (thermal) or latest.
-    alert: "AlertFrame"
+    alert: AlertFrame
     #: Alerts inside the window this report covers. 1 for a first occurrence.
     count_in_window: int
     summary: bool
@@ -857,10 +789,10 @@ class HandStatus:
     status_type: (
         int  # 1=rotary status, 2=linear status, 3=rotary target, 4=linear target
     )
-    rotary_positions: List[int]  # FT3950 encoder counts, 0–4095 (neutral 2048)
-    linear_positions: List[int]  # 0.01 mm stroke counts
-    rotary_targets: List[int]  # commanded encoder counts
-    linear_targets: List[int]  # commanded 0.01 mm counts
+    rotary_positions: list[int]  # FT3950 encoder counts, 0–4095 (neutral 2048)
+    linear_positions: list[int]  # 0.01 mm stroke counts
+    rotary_targets: list[int]  # commanded encoder counts
+    linear_targets: list[int]  # commanded 0.01 mm counts
 
 
 # ============================================================================
@@ -1040,6 +972,37 @@ _lib.prohand_send_homing_at.argtypes = [
 ]
 _lib.prohand_send_homing_at.restype = c_int
 
+# Motion library
+_lib.prohand_motion_play.argtypes = [
+    POINTER(ProHandClientHandle),
+    c_uint16,  # slot
+    c_uint16,  # speed_percent
+    c_uint16,  # effort_percent
+    c_int,  # loops (-1 = the slot's own)
+    c_uint64,  # start_at_epoch_us (0 = at once)
+    c_int,  # queue
+]
+_lib.prohand_motion_play.restype = c_int
+_lib.prohand_motion_stop.argtypes = [POINTER(ProHandClientHandle)]
+_lib.prohand_motion_stop.restype = c_int
+_lib.prohand_motion_pause.argtypes = [POINTER(ProHandClientHandle)]
+_lib.prohand_motion_pause.restype = c_int
+_lib.prohand_motion_resume.argtypes = [POINTER(ProHandClientHandle)]
+_lib.prohand_motion_resume.restype = c_int
+_lib.prohand_motion_release.argtypes = [POINTER(ProHandClientHandle)]
+_lib.prohand_motion_release.restype = c_int
+_lib.prohand_motion_query.argtypes = [POINTER(ProHandClientHandle)]
+_lib.prohand_motion_query.restype = c_int
+_lib.prohand_motion_set_autoplay.argtypes = [POINTER(ProHandClientHandle), c_int]
+_lib.prohand_motion_set_autoplay.restype = c_int
+_lib.prohand_motion_upload.argtypes = [
+    POINTER(ProHandClientHandle),
+    POINTER(c_uint8),
+    ctypes.c_size_t,
+    POINTER(c_uint32),
+]
+_lib.prohand_motion_upload.restype = c_int
+
 # USB discovery
 _lib.prohand_discover_usb_devices.argtypes = [POINTER(ProHandUsbDeviceInfo), c_int]
 _lib.prohand_discover_usb_devices.restype = c_int
@@ -1085,19 +1048,13 @@ _lib.prohand_get_version.restype = c_char_p
 class ProHandError(Exception):
     """Base exception for ProHand SDK errors"""
 
-    pass
-
 
 class ConnectionError(ProHandError):
     """Connection-related errors"""
 
-    pass
-
 
 class InvalidArgumentError(ProHandError):
     """Invalid argument errors"""
-
-    pass
 
 
 def _check_abi() -> None:
@@ -1301,7 +1258,7 @@ def _decode_message(message: ProHandMessageC):
 MAX_SIGNALS = 48
 
 
-def _alert_from_c(alert: "_AlertC") -> AlertFrame:
+def _alert_from_c(alert: _AlertC) -> AlertFrame:
     return AlertFrame(
         timestamp_ms=alert.timestamp_ms,
         source=AlertSource(alert.source),
@@ -1313,7 +1270,7 @@ def _alert_from_c(alert: "_AlertC") -> AlertFrame:
     )
 
 
-def _alert_report_from_c(c: "ProHandAlertReportC") -> AlertReport:
+def _alert_report_from_c(c: ProHandAlertReportC) -> AlertReport:
     return AlertReport(
         alert=_alert_from_c(c.alert),
         count_in_window=c.count_in_window,
@@ -1321,7 +1278,7 @@ def _alert_report_from_c(c: "ProHandAlertReportC") -> AlertReport:
     )
 
 
-def _system_event_from_c(c: "ProHandSystemEventC") -> SystemEvent:
+def _system_event_from_c(c: ProHandSystemEventC) -> SystemEvent:
     return SystemEvent(
         timestamp_ms=c.timestamp_ms,
         kind=SystemEventKind(c.kind),
@@ -1334,7 +1291,7 @@ def _system_event_from_c(c: "ProHandSystemEventC") -> SystemEvent:
     )
 
 
-def _system_status_from_c(c: "ProHandSystemStatusC") -> SystemStatus:
+def _system_status_from_c(c: ProHandSystemStatusC) -> SystemStatus:
     return SystemStatus(
         ms_since_heartbeat=c.ms_since_heartbeat,
         connected=bool(c.connected),
@@ -1351,7 +1308,7 @@ def _system_status_from_c(c: "ProHandSystemStatusC") -> SystemStatus:
     )
 
 
-def _signal_rate_from_c(c: "SignalRateC") -> SignalRate:
+def _signal_rate_from_c(c: SignalRateC) -> SignalRate:
     return SignalRate(
         source=c.key.source,
         severity=c.key.severity,
@@ -1366,7 +1323,7 @@ def _signal_rate_from_c(c: "SignalRateC") -> SignalRate:
     )
 
 
-def _thermal_load_from_c(c: "ThermalLoadC") -> ThermalLoad:
+def _thermal_load_from_c(c: ThermalLoadC) -> ThermalLoad:
     return ThermalLoad(
         source=c.source,
         actuator=c.actuator,
@@ -1379,7 +1336,7 @@ def _thermal_load_from_c(c: "ThermalLoadC") -> ThermalLoad:
     )
 
 
-def _expand_torques(torque: Union[float, List[float]]):
+def _expand_torques(torque: float | list[float]):
     """Expand a torque argument into the 20 per-joint values the wire carries.
 
     Accepts a scalar (whole hand), 5 values (per finger, thumb to pinky), or 20
@@ -1593,7 +1550,7 @@ class ProHandClient:
         # First, verify command channel is working
         try:
             self.send_ping()
-        except Exception:
+        except ProHandError:
             logger.debug("Ping failed during enable_streaming_mode")
             return False
 
@@ -1616,7 +1573,7 @@ class ProHandClient:
                 try:
                     self.set_streaming_mode(True)
                     last_retry_time = time.time()
-                except Exception:
+                except ProHandError:
                     logger.debug("set_streaming_mode retry failed, will keep trying")
 
             # Wait before next poll
@@ -1629,7 +1586,7 @@ class ProHandClient:
         # Timeout - check one last time
         return self.is_running_state()
 
-    def send_rotary_commands(self, positions: List[float], torques: List[float]):
+    def send_rotary_commands(self, positions: list[float], torques: list[float]):
         """
         Send rotary motor commands via REQ/REP command channel
 
@@ -1651,7 +1608,7 @@ class ProHandClient:
         )
         _check_result(result, "send_rotary_commands")
 
-    def send_rotary_streams(self, positions: List[float], torques: List[float]):
+    def send_rotary_streams(self, positions: list[float], torques: list[float]):
         """
         Send rotary motor commands via PUB/SUB streaming channel
 
@@ -1674,7 +1631,7 @@ class ProHandClient:
         result = _lib.prohand_send_rotary_streams(self._handle, pos_array, torque_array)
         _check_result(result, "send_rotary_streams")
 
-    def send_linear_commands(self, positions: List[float], speeds: List[float]):
+    def send_linear_commands(self, positions: list[float], speeds: list[float]):
         """
         Send linear motor commands via REQ/REP command channel
 
@@ -1694,7 +1651,7 @@ class ProHandClient:
         result = _lib.prohand_send_linear_commands(self._handle, pos_array, vel_array)
         _check_result(result, "send_linear_commands")
 
-    def send_linear_streams(self, positions: List[float], speeds: List[float]):
+    def send_linear_streams(self, positions: list[float], speeds: list[float]):
         """
         Send linear motor commands via PUB/SUB streaming channel
 
@@ -1717,7 +1674,7 @@ class ProHandClient:
         result = _lib.prohand_send_linear_streams(self._handle, pos_array, vel_array)
         _check_result(result, "send_linear_streams")
 
-    def send_wrist_command(self, positions: List[float], use_profiler: bool = False):
+    def send_wrist_command(self, positions: list[float], use_profiler: bool = False):
         """
         Send wrist joint command via REQ/REP command channel (high-level wrist joints)
 
@@ -1737,7 +1694,7 @@ class ProHandClient:
             result = _lib.prohand_send_wrist_command(self._handle, pos_array, False)
         _check_result(result, "send_wrist_command")
 
-    def send_wrist_streams(self, positions: List[float], use_profiler: bool = False):
+    def send_wrist_streams(self, positions: list[float], use_profiler: bool = False):
         """
         Send wrist joint command via PUB/SUB streaming channel (high-level wrist joints)
 
@@ -1759,9 +1716,9 @@ class ProHandClient:
 
     def set_wrist_limits(
         self,
-        max_velocity: List[float],
-        max_acceleration: List[float],
-        max_jerk: List[float],
+        max_velocity: list[float],
+        max_acceleration: list[float],
+        max_jerk: list[float],
     ):
         """
         Configure wrist motion limits (rad units). Effective only if the SDK was built with the motion profiler feature.
@@ -1774,7 +1731,7 @@ class ProHandClient:
         result = _lib.prohand_set_wrist_limits(self._handle, vel, acc, jerk)
         _check_result(result, "set_wrist_limits")
 
-    def poll_event(self) -> Optional[SystemEvent]:
+    def poll_event(self) -> SystemEvent | None:
         """
         Take the next qualified monitoring event, oldest first, or None when the
         queue is empty.
@@ -1789,11 +1746,13 @@ class ProHandClient:
             _check_result(n, "poll_event")
         return _system_event_from_c(out) if n == 1 else None
 
-    def drain_events(self) -> List[SystemEvent]:
+    def drain_events(self) -> list[SystemEvent]:
         """Every queued monitoring event, oldest first."""
         events = []
-        while (event := self.poll_event()) is not None:
+        event = self.poll_event()
+        while event is not None:
             events.append(event)
+            event = self.poll_event()
         return events
 
     @property
@@ -1808,7 +1767,7 @@ class ProHandClient:
             _check_result(n, "dropped_events")
         return n
 
-    def poll_alert_report(self) -> Optional[AlertReport]:
+    def poll_alert_report(self) -> AlertReport | None:
         """
         Take the next rate-limited alert report, oldest first, or None when the
         queue is empty.
@@ -1822,11 +1781,13 @@ class ProHandClient:
             _check_result(n, "poll_alert_report")
         return _alert_report_from_c(out) if n == 1 else None
 
-    def drain_alert_reports(self) -> List[AlertReport]:
+    def drain_alert_reports(self) -> list[AlertReport]:
         """Every queued alert report, oldest first."""
         reports = []
-        while (report := self.poll_alert_report()) is not None:
+        report = self.poll_alert_report()
+        while report is not None:
             reports.append(report)
+            report = self.poll_alert_report()
         return reports
 
     @property
@@ -1853,7 +1814,7 @@ class ProHandClient:
         _check_result(result, "system_status")
         return _system_status_from_c(out)
 
-    def signal_rates(self) -> List[SignalRate]:
+    def signal_rates(self) -> list[SignalRate]:
         """
         Every alerting signal active inside the window, thermal or not.
 
@@ -1866,7 +1827,7 @@ class ProHandClient:
             _check_result(n, "signal_rates")
         return [_signal_rate_from_c(buf[i]) for i in range(max(n, 0))]
 
-    def thermal_load(self) -> List[ThermalLoad]:
+    def thermal_load(self) -> list[ThermalLoad]:
         """
         Thermal load per subsystem, as a percentage of the maximum rate at which
         firmware can publish thermal alerts. Quiet subsystems are omitted.
@@ -1881,7 +1842,7 @@ class ProHandClient:
         _check_result(n, "thermal_load") if n < 0 else None
         return [_thermal_load_from_c(buf[i]) for i in range(max(n, 0))]
 
-    def worst_thermal_load(self) -> Optional[ThermalLoad]:
+    def worst_thermal_load(self) -> ThermalLoad | None:
         """
         The most loaded subsystem, lockdown ranked above warning.
 
@@ -1895,8 +1856,8 @@ class ProHandClient:
 
     def send_hand_command(
         self,
-        positions: List[float],
-        torque: Union[float, List[float]] = 0.45,
+        positions: list[float],
+        torque: float | list[float] = 0.45,
         velocity_saturation: float = 0.0,
     ):
         """
@@ -1943,8 +1904,8 @@ class ProHandClient:
 
     def send_hand_streams(
         self,
-        positions: List[float],
-        torque: Union[float, List[float]] = 0.45,
+        positions: list[float],
+        torque: float | list[float] = 0.45,
         velocity_saturation: float = 0.0,
     ):
         """
@@ -1995,7 +1956,7 @@ class ProHandClient:
         )
         _check_result(result, "send_hand_streams")
 
-    def send_zero_calibration(self, mask: List[bool]):
+    def send_zero_calibration(self, mask: list[bool]):
         """
         Perform zero calibration on selected joints
 
@@ -2083,6 +2044,89 @@ class ProHandClient:
         _check_result(result, "send_homing_at")
 
     # ========================================================================
+    # MOTION LIBRARY
+    # ========================================================================
+
+    def motion_play(
+        self,
+        slot: int,
+        speed_percent: int = 100,
+        effort_percent: int = 100,
+        loops: int | None = None,
+        start_at_epoch_us: int | None = None,
+        queue: bool = False,
+    ):
+        """
+        Play a slot of the hand's motion library.
+
+        Args:
+            slot: the slot id
+            speed_percent: 25-400; 100 plays as stored
+            effort_percent: finger torque scale, 0-200; no torque exceeds full
+            loops: passes; None = the slot's own count, 0 = forever
+            start_at_epoch_us: UNIX time in microseconds at which the slot's
+                first pose plays; hands given the same time play in step.
+                None = at once.
+            queue: play after the slots already playing or queued
+        """
+        if not 25 <= speed_percent <= 400:
+            raise ValueError("speed_percent must be 25..=400")
+        if not 0 <= effort_percent <= 200:
+            raise ValueError("effort_percent must be 0..=200")
+        result = _lib.prohand_motion_play(
+            self._handle,
+            c_uint16(slot),
+            c_uint16(speed_percent),
+            c_uint16(effort_percent),
+            c_int(-1 if loops is None else loops),
+            c_uint64(start_at_epoch_us or 0),
+            c_int(1 if queue else 0),
+        )
+        _check_result(result, "motion_play")
+
+    def motion_stop(self):
+        """Stop the slot playing and clear the queue."""
+        _check_result(_lib.prohand_motion_stop(self._handle), "motion_stop")
+
+    def motion_pause(self):
+        """Freeze the slot playing; its clock stops until motion_resume()."""
+        _check_result(_lib.prohand_motion_pause(self._handle), "motion_pause")
+
+    def motion_resume(self):
+        _check_result(_lib.prohand_motion_resume(self._handle), "motion_resume")
+
+    def motion_release(self):
+        """Move back to the slot's first pose: a grasp opens."""
+        _check_result(_lib.prohand_motion_release(self._handle), "motion_release")
+
+    def motion_query(self):
+        """Ask for the library and player state, then one message per slot."""
+        _check_result(_lib.prohand_motion_query(self._handle), "motion_query")
+
+    def motion_set_autoplay(self, slot: int | None):
+        """The slot the hand plays by itself; None turns it off."""
+        result = _lib.prohand_motion_set_autoplay(
+            self._handle, c_int(-1 if slot is None else slot)
+        )
+        _check_result(result, "motion_set_autoplay")
+
+    def motion_upload(self, image: bytes) -> int:
+        """
+        Upload a packed library image (motion-pack output) and make it the
+        hand's library. Blocks until the hand commits it.
+
+        Returns:
+            The library's write counter.
+        """
+        buffer = (c_uint8 * len(image)).from_buffer_copy(image)
+        seq = c_uint32(0)
+        result = _lib.prohand_motion_upload(
+            self._handle, buffer, len(image), byref(seq)
+        )
+        _check_result(result, "motion_upload")
+        return seq.value
+
+    # ========================================================================
     # STATUS POLLING
     # ========================================================================
 
@@ -2122,7 +2166,7 @@ class ProHandClient:
         _check_result(result, "try_recv_message")
         return None
 
-    def try_recv_status(self) -> Optional[HandStatus]:
+    def try_recv_status(self) -> HandStatus | None:
         """
         Try to receive status (non-blocking) — rotary/linear positions and targets only.
 
@@ -2161,7 +2205,7 @@ class ProHandClient:
 # ============================================================================
 
 
-def discover_usb_devices(max_devices: int = 10) -> List[UsbDevice]:
+def discover_usb_devices(max_devices: int = 10) -> list[UsbDevice]:
     """
     Discover connected ProHand USB devices
 

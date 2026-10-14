@@ -13,12 +13,14 @@
 # RAW USB ACCESS (required for usb-discovery, usb-serial-bridge, direct USB)
 # Grants permission to access device via libusb/rusb/nusb
 # ============================================================================
-# ProHand (CP2104)
+# BEGIN def-usb-products usb
+# hand-v1
 SUBSYSTEM=="usb", ATTR{idVendor}=="10c4", ATTR{idProduct}=="ea60", MODE="0666", GROUP="plugdev"
-# ProGlove (CP2102N)
+# glove-cp210x
 SUBSYSTEM=="usb", ATTR{idVendor}=="10c4", ATTR{idProduct}=="ea61", MODE="0666", GROUP="plugdev"
-# ProHand STM (native USB, no bridge chip — no tty/unbind rules needed)
+# ProHand (legacy)
 SUBSYSTEM=="usb", ATTR{idVendor}=="10c4", ATTR{idProduct}=="ea62", MODE="0666", GROUP="plugdev"
+# END def-usb-products usb
 
 # ============================================================================
 # UNBIND KERNEL DRIVER (for "just run-auto" / raw USB mode)
@@ -40,10 +42,12 @@ ACTION=="bind", SUBSYSTEM=="usb", ATTR{idVendor}=="10c4", ATTR{idProduct}=="ea61
 # ENV{ID_MM_DEVICE_IGNORE} prevents ModemManager from probing the device
 # power/control="on" disables USB autosuspend (CP210x power-save issue)
 # ============================================================================
-# ProHand
+# BEGIN def-usb-products tty
+# hand-v1
 SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", MODE="0666", GROUP="plugdev", ENV{ID_MM_DEVICE_IGNORE}="1", TEST=="power/control", ATTR{power/control}="on"
-# ProGlove
+# glove-cp210x
 SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea61", MODE="0666", GROUP="plugdev", ENV{ID_MM_DEVICE_IGNORE}="1", TEST=="power/control", ATTR{power/control}="on"
+# END def-usb-products tty
 
 # ============================================================================
 # SYMLINK CREATION (optional - creates predictable device names)

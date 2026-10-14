@@ -68,6 +68,12 @@
 
 #define GLOVE_PROTO_KIND_RAW_POSITION_FRAME 11
 
+#define GLOVE_PROTO_KIND_FIRMWARE_LOAD 12
+
+#define GLOVE_PROTO_KIND_TIME_SYNC_ACK 14
+
+#define GLOVE_PROTO_KIND_SYNC_STATUS 15
+
 /**
  * Per-hand protocol session: COBS reassembly buffer + outgoing payload queue.
  */

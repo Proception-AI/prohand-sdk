@@ -13,23 +13,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Changes to existing functionality go here
 
-### Deprecated
-- Soon-to-be removed features go here
-
-### Removed
-- Removed features go here
-
 ### Fixed
 - Bug fixes go here
 
-### Security
-- Security improvements go here
-
 ---
 
-<!-- Version entries will be added below by the packaging script -->
+## [0.4.25.0] — 2026-10-13
 
-# Release 0.4.13.0
+_Components:_ sdk: 0.4.25.0, driver: 0.4.25.0, firmware: 1.4.21.0
+
+### Added
+
+- Motion library API in the C, C++ and Python SDKs: `motion_upload` loads a packed library image onto the hand; `motion_play`, `motion_stop`, `motion_pause`, `motion_resume`, `motion_release`, `motion_query` and `motion_set_autoplay` control playback
+- Protocol reference clients for Python, C++ and Rust under `protocol/reference/prohand/`, with recorded command and status frames as test fixtures, and the Cap'n Proto wire schema under `protocol/schema/prohand/`
+- Python SDK: result codes and constants are generated from the C header (`prohand_sdk._ffi_constants`), and each Python SDK ships ABI tests against its native library
+
+### Changed
+
+- Linux udev rules list each supported USB product by vendor and product ID
 
 ---
 

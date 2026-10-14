@@ -20,4 +20,4 @@ package-dir = { "prowrist_sdk" = "prowrist_sdk" }
 dev-dependencies = []
 
 [tool.pyright]
-stubPath = "../../../../typings"
+stubPath = "../../../../../typings"
