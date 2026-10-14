@@ -8,7 +8,7 @@ that branch.
 | Product line | Branch | Firmware | SDK / driver | Status |
 |---|---|---|---|---|
 | ProHand Gen1 (Gen1.A, Gen1.D) | `release/gen1` | 0.9.x | SDK 0.3.17.0 | maintenance |
-| ProHand Gen2 Power | `release/gen2` | 1.3.0 and later | SDK 0.4.13.0, driver 0.4.14 | current |
+| ProHand Gen2 Power | `release/gen2` | 1.3.0 and later | SDK 0.4.25.0, driver 0.4.25 | current |
 
 The lines are not interchangeable. A Gen2 driver does not connect to Gen1
 firmware, and a Gen1 driver does not connect to Gen2 firmware. Use the branch
@@ -30,7 +30,7 @@ Every release is a tag named `<line>/<sdk-version>`:
 
 ```bash
 git tag -l 'gen2/*'            # releases of the Gen2 Power line
-git checkout gen2/0.4.13.0     # pin to one
+git checkout gen2/0.4.25.0     # pin to one
 ```
 
 Each branch has its own README, INDEX.md and CHANGELOG.md for that line.
