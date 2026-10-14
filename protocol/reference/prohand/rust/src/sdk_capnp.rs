@@ -104,10 +104,9 @@ pub struct WristCommand {
     pub wrist: [CompactJointState; 2],
 }
 
-/// Mirrors prohand-config RotaryConfig::default_velocity (crates/prohand-config/
-/// src/hw/rotary.rs) — the same value prohand-messages' RotaryCommand::default()
-/// uses, so a command published from this SDK moves at the fleet-default speed
-/// rather than Cap'n Proto's 0 (= servo Running Speed 0 = stop).
+/// The fleet-default rotary velocity, so a command published from this SDK
+/// moves at the fleet-default speed rather than Cap'n Proto's 0 (= servo
+/// Running Speed 0 = stop).
 pub const DEFAULT_ROTARY_VELOCITY: u8 = 50;
 
 /// Rotary motor command

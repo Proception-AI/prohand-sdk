@@ -18,6 +18,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.26.0] — 2026-10-13
+
+_Components:_ sdk: 0.4.26.0, driver: 0.4.26.0, firmware: 1.4.21.0
+
+### Fixed
+
+- Driver binaries and client libraries no longer embed the build machine's directory paths
+- API docs for `motion_upload` describe the image as a packed motion library image
+
+---
+
 ## [0.4.25.0] — 2026-10-13
 
 _Components:_ sdk: 0.4.25.0, driver: 0.4.25.0, firmware: 1.4.21.0

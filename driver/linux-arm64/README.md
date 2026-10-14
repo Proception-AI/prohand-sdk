@@ -1,8 +1,8 @@
 # ProHand Driver Binaries - linux-arm64
 
-Version: 0.4.25.0
+Version: 0.4.26.0
 Platform: linux-arm64
-Build Date: 2026-10-14 01:51:18 UTC
+Build Date: 2026-10-14 04:13:59 UTC
 
 ## Included Binaries
 

@@ -4,8 +4,7 @@ ProGlove taxel geometry for spatial (palm) visualization.
 Positions are parsed from the bundled `assets/GT1_Vector_Taxels_{left,right}.svg`
 (copies of the CAD source-of-truth, kept alongside the demo for stability), and
 mapped from flat reading order into SVG dot order via the per-hand correction
-tables. This mirrors `gui/crates/gui-backend/build.rs` + `glove_viz_svg.rs` in the Rust GUI,
-so the demo places the same 100 taxels the diagnostic GUI does.
+tables, so the demo places the same 100 taxels the diagnostic GUI does.
 """
 
 from pathlib import Path

@@ -1,6 +1,6 @@
 [package]
 name = "prohand-client"
-version = "0.4.25"
+version = "0.4.26"
 edition = "2021"
 license = "LicenseRef-Proception-SDK"
 description = "ProHand protocol reference client: commands, streams and status over ZeroMQ and Cap'n Proto"

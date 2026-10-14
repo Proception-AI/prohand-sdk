@@ -1,7 +1,7 @@
 ProHand, ProGlove & ProWristCam SDK Package
 ===========================================
 
-Version: 0.4.25.0
+Version: 0.4.26.0
 Build Date: 2026-10-13
 Platform: macos-arm64, linux-arm64, linux-x64
 

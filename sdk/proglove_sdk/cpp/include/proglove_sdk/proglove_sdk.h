@@ -62,8 +62,7 @@ typedef struct {
                                with proglove_free_string() */
 } ProGloveUsbDeviceInfo;
 
-/* Taxel array sizes per segment, in wire order. Generated from
- * glove-rt/crates/proglove-config; see its tests/generated_tables.rs. */
+/* Taxel array sizes per segment, in wire order. */
 // BEGIN proglove-config taxels
 #define PROGLOVE_TAXELS_T_DIP 6
 #define PROGLOVE_TAXELS_T_MCP 10

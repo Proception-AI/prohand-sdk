@@ -180,7 +180,7 @@ class ProHandStatusInfo(Structure):
 
 
 # ============================================================================
-# STATUS MESSAGES — ctypes mirrors of the prohand-messages wire structs
+# STATUS MESSAGES — ctypes mirrors of the wire structs
 #
 # These layouts must match the Rust `repr(C)` structs exactly. `_check_abi()`
 # below verifies that against the loaded library at import time, so a wrapper
@@ -2112,7 +2112,7 @@ class ProHandClient:
 
     def motion_upload(self, image: bytes) -> int:
         """
-        Upload a packed library image (motion-pack output) and make it the
+        Upload a packed motion library image and make it the
         hand's library. Blocks until the hand commits it.
 
         Returns:

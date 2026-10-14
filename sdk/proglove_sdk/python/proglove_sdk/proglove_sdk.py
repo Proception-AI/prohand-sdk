@@ -139,8 +139,7 @@ class ProGloveResult(IntEnum):
     ERROR_OTHER = -99
 
 
-# Taxel segment sizes, in wire order. Generated from glove-rt/crates/proglove-config:
-# TAXEL_TABLES_WRITE=1 cargo test -p proglove-config --test generated_tables
+# Taxel segment sizes, in wire order.
 # BEGIN proglove-config taxels
 TAXELS_T_DIP = 6
 TAXELS_T_MCP = 10

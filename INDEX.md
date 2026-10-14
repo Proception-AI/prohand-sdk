@@ -1,11 +1,11 @@
 # ProHand SDK Release Index
 
-**Current Release**: 0.4.25.0
+**Current Release**: 0.4.26.0
 **Release Date**: 2026-10-13
 
 ## Version Information
 
-- **SDK Version**: 0.4.25.0
+- **SDK Version**: 0.4.26.0
 - **Firmware Version**: 1.4.21.0
 - **macOS App Version**: 0.9.53.0
 
@@ -94,7 +94,7 @@ git tag -l 'gen2/*'
 To check out this release:
 
 ```bash
-git checkout gen2/0.4.25.0
+git checkout gen2/0.4.26.0
 ```
 
 Other product lines have their own branches; see the README on `main`.

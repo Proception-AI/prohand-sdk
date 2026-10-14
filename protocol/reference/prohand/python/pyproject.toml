@@ -1,6 +1,6 @@
 [project]
 name = "prohand-client"
-version = "0.4.25"
+version = "0.4.26"
 description = "ProHand protocol reference client: commands, streams and status over ZeroMQ and Cap'n Proto"
 readme = "README.md"
 license = "LicenseRef-Proception-SDK"

@@ -844,7 +844,7 @@ public:
   }
 
   /**
-   * Upload a packed library image (motion-pack output) and make it the
+   * Upload a packed motion library image and make it the
    * hand's library. Blocks until the hand commits it.
    *
    * @return the library's write counter

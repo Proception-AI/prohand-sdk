@@ -982,8 +982,8 @@ typedef struct ProHandStateInfo {
 /**
  * Only the arm named by [`ProHandMessage::kind`] is initialised.
  *
- * Every arm but [`Self::state`] and [`Self::handedness`] is a
- * `prohand-messages` type verbatim.
+ * Every arm but [`Self::state`] and [`Self::handedness`] is the wire struct
+ * verbatim.
  */
 typedef union ProHandMessagePayload {
   struct RotaryStatusStamped rotary_status;
@@ -1403,7 +1403,7 @@ enum ProHandResult
 prohand_motion_set_autoplay(const struct ProHandClientHandle *handle, int slot);
 
 /**
- * Upload a packed library image (`motion-pack` output, first bank) and make
+ * Upload a packed motion library image (first bank) and make
  * it the hand's library. Blocks until the hand commits it; the library's
  * write counter goes to `out_library_seq`.
  *
