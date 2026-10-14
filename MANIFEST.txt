@@ -26,7 +26,6 @@ Driver Binaries (3 platforms):
       * prohand-headless-ipc-host (Size: 8.1M, SHA256: 81bc5e1bff6bd0a1f5f3818da914b41b93958c6ff53caf1a57c0f449342c7f59)
       * prowristcam-headless-ipc-host (Size: 4.7M, SHA256: 214127557db571a758ad53fb2b4bf60fa1ab11337fb68aa14d7b9084f1f349e6)
       * README.md (Size: 4.0K, SHA256: 287ba745282f208a81a6dc6ceede928b816dd627381b5ecf48b147d54c2c3886)
-      * udcap-ctrl (Size: 3.4M, SHA256: ae24d40572b928544e39bd26214abe879886cc0f2e1622c50b7cba83e63d1675)
       * VERSION (Size: 4.0K, SHA256: eee082433223141dd138ae500936b778f4dc9806136edd72fa24e1f611d19954)
   - driver/linux-arm64/ (unpacked)
     Size:  19M
@@ -35,7 +34,6 @@ Driver Binaries (3 platforms):
       * prohand-headless-ipc-host (Size: 6.5M, SHA256: 52943af9a1496cf312959cf695b27268c6162a7cfa7509fdb2204add9ea531f5)
       * prowristcam-headless-ipc-host (Size: 3.7M, SHA256: c4bc72f24872813c755484f1ef4fab616a708085d2f4c760d0849dd66e82db58)
       * README.md (Size: 4.0K, SHA256: 2bcc523fd3f7bb29127b0678ca896d5fe77a0c24354fdbfb51943799e233443e)
-      * udcap-ctrl (Size: 2.9M, SHA256: 71e21a7fcf4294a33e1aeb59f61feb1c1e8f92f5a399a9e0af356f7845d5133b)
       * VERSION (Size: 4.0K, SHA256: eee082433223141dd138ae500936b778f4dc9806136edd72fa24e1f611d19954)
   - driver/linux-x64/ (unpacked)
     Size:  21M
@@ -44,5 +42,4 @@ Driver Binaries (3 platforms):
       * prohand-headless-ipc-host (Size: 7.1M, SHA256: eed9bd3161657516f713625a786fbef4327a1ae6cc180706e2cf645f27ca9078)
       * prowristcam-headless-ipc-host (Size: 4.1M, SHA256: dcb0f11a514e9b5a5ce4f943909fc9cc0980984aa3e65b941cb838150c5bc871)
       * README.md (Size: 4.0K, SHA256: 3306b8ff8b920565866c0ff960635e0c2daeabee3b155f6501fb690b52afd8d9)
-      * udcap-ctrl (Size: 3.2M, SHA256: 27dd521c4b06a388c6b6be58d129f2abee9c77b5fc08c6312b89eb37adffdb12)
       * VERSION (Size: 4.0K, SHA256: eee082433223141dd138ae500936b778f4dc9806136edd72fa24e1f611d19954)

@@ -32,6 +32,10 @@ _Components:_ sdk: 0.4.25.0, driver: 0.4.25.0, firmware: 1.4.21.0
 
 - Linux udev rules list each supported USB product by vendor and product ID
 
+### Removed
+
+- The `udcap-ctrl` binary is no longer in `driver/<platform>/`. It is a teleoperation demo, not a driver; the Python version stays in `sdk/demo/python`
+
 ---
 
 ## [0.4.13.0] — 2026-10-07
