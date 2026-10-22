@@ -9,7 +9,7 @@ Thank you for your interest in contributing to the Proception SDK! We welcome co
 If you find a bug, please report it via:
 
 - **GitHub Issues**: https://github.com/Proception-AI/pro-sdk/issues
-- **Email**: contact@proception.ai
+- **Email**: support@proception.ai
 
 **Please include:**
 
@@ -118,7 +118,7 @@ However, feedback and bug reports are always welcome!
 If you have questions about contributing:
 
 - Open a GitHub Discussion
-- Email: contact@proception.ai
+- Email: support@proception.ai
 - Check the documentation: `sdk/docs/`
 
 ## Code of Conduct
@@ -140,4 +140,4 @@ Thank you for contributing to the Proception SDK!
 
 **Proception Inc.**
 Website: https://proception.ai
-Support: contact@proception.ai
+Support: support@proception.ai

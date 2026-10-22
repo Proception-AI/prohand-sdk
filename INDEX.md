@@ -118,4 +118,4 @@ For documentation and support:
 
 - SDK Documentation: See `sdk/docs/`
 - Issues: https://github.com/Proception-AI/pro-sdk/issues
-- Email: contact@proception.ai
+- Email: support@proception.ai
