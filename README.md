@@ -287,12 +287,12 @@ Other product lines have their own branches; see the README on `main`.
 | Windows x64 | ✗ | ✗ |
 
 ✗ Windows is not supported in the near term. Support may be considered upon
-special request — contact contact@proception.ai.
+special request — contact support@proception.ai.
 
 ## Support
 
 - **Issues**: https://github.com/Proception-AI/prohand-sdk/issues
-- **Email**: contact@proception.ai
+- **Email**: support@proception.ai
 - **Contributing**: see [CONTRIBUTING.md](CONTRIBUTING.md)
 - **Security**: see [SECURITY.md](SECURITY.md)
 

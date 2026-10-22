@@ -72,7 +72,7 @@ When using the Proception SDK:
 
 ### Contact
 
-- **General Support**: contact@proception.ai
+- **General Support**: support@proception.ai
 - **Sales Team**: sales@proception.ai
 - **Website**: https://proception.ai
 
