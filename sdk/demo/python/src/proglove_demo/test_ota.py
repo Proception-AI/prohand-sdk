@@ -44,9 +44,8 @@ class TestOtaDemo(DemoBase):
             f"Image size:      {size} bytes ({(size + PAGE_SIZE - 1) // PAGE_SIZE} pages)"
         )
 
-        # Verification is currently unenforced firmware-side (see
-        # fw/pro_hal/src/ota.rs) — zero-filled key/sig work today, but pass
-        # --key-file/--sig-file if/when that changes.
+        # Zero-filled key/sig are accepted today. Pass --key-file/--sig-file
+        # when the firmware requires a signed image.
         key = Path(key_path).read_bytes() if key_path else bytes(KEY_SIZE)
         sig = Path(sig_path).read_bytes() if sig_path else bytes(SIG_SIZE)
         if len(key) != KEY_SIZE:

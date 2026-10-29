@@ -3,9 +3,9 @@
 Official SDK and drivers for the **ProHand** robotic hand, the **ProGlove**
 tactile sensing glove, and the **ProWristCam**.
 
-**Current Version**: 0.4.26.0 on the `gen2` product line
-(branch `release/gen2`, tag `gen2/0.4.26.0`), built against ProHand
-firmware 1.4.21.0. Driver and firmware must come from the same product
+**Current Version**: 2.0.2.0 on the `gen2` product line
+(branch `release/gen2`, tag `gen2/2.0.2.0`), built against ProHand
+firmware 2.0.7.0. Driver and firmware must come from the same product
 line; the README on `main` lists the lines.
 
 The SDK is a C FFI dynamic library (`cdylib`) with ready-to-use **Python**
@@ -37,6 +37,16 @@ serial. Status and high-rate streaming flow back on separate channels.
 | **ProHand** | 22-DoF robotic hand (18 active + 4 pseudo-active) | 16 rotary servos, 2 linear actuators, 2 wrist joints; high-level per-finger joint control (5 fingers × 4 joints) with on-device inverse kinematics |
 | **ProGlove** | Tactile sensing glove | 100 taxels across fingers + palm, plus IMU |
 | **ProWristCam** | Wrist-mounted camera | JPEG frame stream |
+
+### ProHand wrist range of motion
+
+![ProHand wrist reachable range of motion](docs/prohand-wrist-envelope.svg)
+
+The wrist has two joints: yaw (abduction) and pitch (flexion). Two linear
+actuators drive both joints together, so not every yaw and pitch pair inside
+the joint range is reachable. The shaded area shows the poses the wrist can
+hold, and the diagram gives the limits. If you command a pose outside the
+shaded area, the hand keeps the pitch and stops the yaw at the edge.
 
 ### ZMQ endpoints (ProHand, default TCP)
 
@@ -271,7 +281,7 @@ tag named `<line>/<sdk-version>`:
 ```bash
 git clone --branch release/gen2 --single-branch https://github.com/Proception-AI/prohand-sdk.git
 git tag -l 'gen2/*'      # releases of this line
-git checkout gen2/0.4.26.0         # pin to this release
+git checkout gen2/2.0.2.0         # pin to this release
 ```
 
 Other product lines have their own branches; see the README on `main`.

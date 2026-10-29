@@ -18,6 +18,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+# Release 2.0.2.0
+
+---
+
+## [2.0.2.0] — 2026-10-28
+
+_Components:_ sdk: 2.0.2.0,driver: 2.1.2.0,firmware: 2.0.7.0,
+
+### Added
+
+- A diagram of the wrist range of motion that both wrist actuators can reach
+
+### Changed
+
+- Versions follow the hardware generation: the Gen 2 SDK, driver and firmware start at 2.0. The API does not change from 0.4.26.0
+- The two wrist actuators arrive at the target together, so a combined yaw and pitch move goes in a straight path
+- Wrist yaw and pitch each report their own signed torque (-1 to 1). Before, both showed the larger actuator effort
+- While a host streams, the hand keeps saved settings in memory and writes them after the session, or every 30 minutes. Status frames stay on time during a save
+- In torque mode, finger speed is not limited
+
+### Fixed
+
+- A wrist target outside the reachable range goes to the nearest reachable pose. Before, pitch drifted
+- Wrist commands and reported angles away from the yaw and pitch axes are correct, and the wrist angle resolves at the corners of the range
+- Wrist effort no longer saturates at low current
+- Kapandji demo: the slide passes keep a gap between the thumb and the fingers
+- A client that does not read the stream no longer delays the stream for the other clients
+- The driver stays responsive when clients connect and disconnect quickly
+- The hand no longer resets during long finger-cycling sessions or at the end of a firmware update
+- IMU readings no longer show occasional spikes
+
+### Security
+
+- The driver uses a Tokio release with the fix for RUSTSEC-2026-0386
+
+---
+
 ## [0.4.26.0] — 2026-10-13
 
 _Components:_ sdk: 0.4.26.0, driver: 0.4.26.0, firmware: 1.4.21.0
